@@ -18,7 +18,6 @@ class Error():
         return self.columna
     
     def getInfo(self):
-        print("**** **** ****")
-        info = f""" 
-        Tipo: {self.tipo}, Lexema: {self.lexema}, Linea: {self.linea}, Columna: {self.columna}
+        return f""" 
+Tipo: {self.tipo}, Lexema: {self.lexema}, Linea: {self.linea}, Columna: {self.columna}
         """

@@ -6,6 +6,7 @@ class ventanaPrincipal(tk):
 
     def __init__(self):
         super().__init__()
+
         self.title("La Liga Bot")
         
         ancho_ventana = 1100
@@ -120,7 +121,11 @@ class ventanaPrincipal(tk):
         PARTIDOS “Real Madrid” TEMPORADA <1999-2000> -ji 1 -jf 18 | PARTIDOS “Español” TEMPORADA <1999-2000> -f reporteEspanol
         TOP SUPERIOR TEMPORADA <2000-2001> | TOP INFERIOR TEMPORADA <1999-2000> -n 3
         ADIOS
-        """ 
+        
+        generando archivo de resultados de jornada 20 temporada 2015-2016
+        En la temporada 2019-2020 el Levante anoto 15 goles de local
+        generando archivo de clasificacion temporada 2019-2020
+        """  
         
         self.textarea.place(x=20, y= 20, width=850, height=500)
         self.bienvenida.grid(row=0,column=0, sticky="nsew")
