@@ -3,8 +3,21 @@ from tkinter import *
 from tkinter import ttk
 from Partido import Partido
 from LectorArchivo import *
+from AnalizadorLexico import *
+from Token import Token
+from Error import Error
 
 global textarea, reporte_errores, clean_log_errors, reporte_tokens, m_u, m_t, send, caja_texto
+global listaTokens, listaErroresL, listaErroresS, mi_canvas, textarea2
+
+listaTokens = []
+listaErroresL = []
+listaErroresS = []
+def analisisLexico():
+    pass
+
+
+
 
 def moveTextToTextArea():
     global textarea, caja_texto
@@ -17,18 +30,14 @@ def moveTextToTextArea():
     comando = caja_texto.get()
     if comando != "":
         comando += "\n"
-        # lTA = float(len(textarea.get("1.0",'end')))
-        # print(lTA)
-        # print(textarea.get("1.0",'end'))
-        # textarea.config(state='normal')
-        # textarea.insert(lTA, comando)
-        # textarea.config(state='disabled')
+        
         print(comando)
     else:
         messagebox.showerror("Error!!!","La caja de texto no contiene ningún comando a leer")
 
 def crearVentanaPrincipal():
     global textarea, reporte_errores, clean_log_errors, reporte_tokens, m_u, m_t, send, caja_texto
+    global mi_canvas, textarea2
     #Se crea un objeto ventana
     ventana = tk.Tk()
     
@@ -86,8 +95,8 @@ def crearVentanaPrincipal():
     
     salida1 = Label(textarea2, text="generando archivo de resultados de jornada 20 temporada 2015-2016" ,bg="#121707", fg="#FBFCFC", font=("Helvetica", 11)) #, anchor='e'
     salida1.grid(row=2,column=0, sticky="nsew")
-    for thing in range(100):
-        #Label(textarea2, text="Bienvenido a La Liga Bot, Ingrese un comando").grid(row=thing, column=0, sticky="nsew", pady=10, padx=10)
-        Label(textarea2, borderwidth=1 ,relief="raised",text='RESULTADO "Real Madrid" vs "Villareal" TEMPORADA <2019-2020>',bg="#121707", fg="#FBFCFC", font=("Helvetica", 10)).grid(row=thing, column=1, sticky="nsew", pady=10, padx=10)
+    # for thing in range(100):
+    #     #Label(textarea2, text="Bienvenido a La Liga Bot, Ingrese un comando").grid(row=thing, column=0, sticky="nsew", pady=10, padx=10)
+    #     Label(textarea2, borderwidth=1 ,relief="raised",text='RESULTADO "Real Madrid" vs "Villareal" TEMPORADA <2019-2020>',bg="#121707", fg="#FBFCFC", font=("Helvetica", 10)).grid(row=thing, column=1, sticky="nsew", pady=10, padx=10)
     
     ventana.mainloop()

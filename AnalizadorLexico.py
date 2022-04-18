@@ -7,268 +7,282 @@ class AnalizadorLexico():
         self.listaTokens = []
         self.listaErrores = []
     
-    #* Se tendran que pasar el numero de linea, 
+    def getListaTokens(self):
+        return self.listaTokens
+    
+    def getListaErrores(self):
+        return self.listaErrores
+    
+    #* Se tendran que pasar el numero de linea
     def analizarEntrada(self, entrada, linea):
-        # * Se genera el analisis general del archivo de entrada
-        buffer = ""  # *Alamacenara de forma un caracter o una cadena de caracteres
-        centinela = "#"  # * Nos ayuda a saber cuando es EOF (End OF File)
-        entrada += centinela  # * Se agrega el centinela a la entrada
-        columna = 1  # * Servira para saber en que columna se encuentra el caracter del archivo
+        self.listaErrores = []
+        self.listaTokens = []
+        
+        #* buffer, centinela y concatenar centinela
+        
+        buffer = ""
+        centinela = "#"
+        entrada += centinela
         print(entrada)
         
-        # * Estados
-        estado = 0  # * Nos servira para saber en que estado nos encontramos y a que estado vamos
-
-        # * Indice -> nos servira para recorrer en la cadena de entrada, caracter por caracter
-        index = 0
+        #*Columna
+        columna = 1
         
-        # * Vamos a recorrer todo el archivo de entrada
+        #*Estado
+        estado = 0
+        
+        #*Iterar caracter por caracter
+        index = 0
         while index < len(entrada):
-            if index == 1 and entrada[index] == centinela: #* En caso de que en la cadena solo venga el centinela --> #
-                return False
+            c = entrada[index]
             if estado == 0:
-                #*Guion bajo
-                if (entrada[index] == "-"):
-                    index -= 1 #* Se retrocede una posicion, para que en el siguiente estado sea aceptado
-                    estado = 1
-                #*Palabras reservadas --> Estas van todas en mayusculas ya que no es lo mismo TEMPORADA que temporada
-                elif(is_letter(entrada[index])):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index]  # * Agregar caracter al buffer
-                    estado = 2  # * Se cambia el estado en caso de ser necesario
-                #*Numeros enteros
-                elif(is_number(entrada[index])):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index]  # * Agregar caracter al buffer
-                    estado = 3  # * Se cambia el estado en caso de ser necesario
                 #*Signos
-                elif (entrada[index] == "<"):
-                    index -= 1 #* Se retrocede una posicion, para que en el siguiente estado sea aceptado
-                    estado = 4
-                elif (entrada[index] == ">"):
-                    index -= 1 #* Se retrocede una posicion, para que en el siguiente estado sea aceptado
-                    estado = 4
-                #*Identificadores
-                elif (is_letter2(entrada[index])):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index]  # * Agregar caracter al buffer
-                    estado = 5  # * Se cambia el estado en caso de ser necesario
-                #*Cadenas
-                elif entrada[index] == '"':
+                if c == "<":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* Creo el token
+                    #* agrego a la lista de tokens
+                    #* limpiar el buffer
+                    #* cambiar estado si es necesario
                     columna += 1
-                    buffer += entrada[index]
-                    estado = 6
-                # * espacios y tabs
-                elif entrada[index] == " " or entrada[index] == "\t":
+                    buffer += c
+                    token = Token("MENORQUE", buffer, linea, columna)
+                    self.listaTokens.append(token)
+                    buffer = ""
+                    estado = 0
+                elif c == ">":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* Creo el token
+                    #* agrego a la lista de tokens
+                    #* limpiar el buffer
+                    #* cambiar estado si es necesario
+                    columna += 1
+                    buffer += c
+                    token = Token("MENORQUE", buffer, linea, columna)
+                    self.listaTokens.append(token)
+                    buffer = ""
+                    estado = 0
+                #*Guion y banderas
+                elif c == "-":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* cambiar estado si es necesario
+                    columna += 1
+                    buffer += c
+                    estado = 1
+                #*Identificadores y Palabras reservadas
+                elif is_letter(c):
+                    columna += 1
+                    buffer += c
+                    estado = 2
+                #*Enteros
+                elif is_number(c):
+                    #* Sumar a la columna
+                    #* Agregar al buffer
+                    #* modificar el estado
+                    columna += 1
+                    buffer += c
+                    estado = 4
+                #*Cadenas
+                elif c == "\"":
+                    columna += 1
+                    buffer += c
+                    estado = 5
+                #*Espacios y tabs
+                elif c == " " or c == "\t":
                     columna += 1
                     estado = 0
-                # * centinela
-                elif(entrada[index] == centinela):
+                elif c == centinela:
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* Creo el token
+                    #* agrego a la lista de tokens
+                    #* limpiar el buffer
+                    #* cambiar estado si es necesario
                     columna += 1
-                    buffer += entrada[index]
-                    if index == (len(entrada)-1):
+                    buffer += c
+                    if index == (len(entrada) - 1) :
                         token = Token("<<EOF>>", buffer, linea, columna)
                         self.listaTokens.append(token)
-                        print("Analisis Lexico completado con exito")
+                        print("Analisis exitoso")
                     else:
                         error = Error("Error Lexico", buffer, linea, columna)
                         self.listaErrores.append(error)
                     buffer = ""
                     estado = 0
-                # * errores
+                #*Errores
                 else:
                     columna += 1
-                    buffer += entrada[index]
-                    error = Error("Error lexico", buffer, linea, columna)
+                    buffer += c
+                    error = Error("Error Lexico", buffer, linea, columna)
                     self.listaErrores.append(error)
+                    buffer = ''
+                    estado = 0
+            elif estado == 1: #*Si el caracter c es un numero quiere decir que el anterior caracter fijo era un guion
+                if c == "f":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* Creo el token
+                    #* agrego a la lista de tokens
+                    #* limpiar el buffer
+                    #* cambiar estado si es necesario
+                    columna += 1
+                    buffer += c
+                    token = Token("BANDERAEXPORTAR", buffer, linea, columna)
+                    self.listaTokens.append(token)
                     buffer = ""
                     estado = 0
-            elif estado == 1:
-                #* Guion
-                if (entrada[index] == "-" and is_number(entrada[index+1])):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index]  # * Agregar caracter al buffer
-                    token = Token("GUION", buffer, linea, columna) #* Se crea el token
+                elif c == "n":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* Creo el token
+                    #* agrego a la lista de tokens
+                    #* limpiar el buffer
+                    #* cambiar estado si es necesario
+                    columna += 1
+                    buffer += c
+                    token = Token("BANDERATOP", buffer, linea, columna)
                     self.listaTokens.append(token)
-                    buffer = ""  # * Se limpia el buffer
-                    estado = 0  # * Se cambia el estado en caso de ser necesario
-                    #print(entrada[index])
-                #* Banderas
-                elif (entrada[index] == "-" and entrada[index+1] == "f"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4
-                elif (entrada[index] == "-" and entrada[index+1] == "n"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
-                elif (entrada[index] == "-" and entrada[index+1] == "j"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 7  # * Se cambia el estado en caso de ser necesario
+                    buffer = ""
+                    estado = 0
+                elif c == "j":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* modificar el estado
+                    columna += 1
+                    buffer += c
+                    estado = 3
+                #*Guion
+                else:
+                    #* no sumar a la columna  [ reconocer el token del buffer ]
+                    #* no agregar al buffer
+                    #* crear el token
+                    #* agregar a la lista el token 
+                    #* limpiar el buffer
+                    #* retroceder el index
+                    #* cambiar el estado
+                    token = Token("GUION", buffer, linea, columna)
+                    self.listaTokens.append(token)
+                    buffer = ""
+                    index -= 1
+                    estado = 0
             elif estado == 2:
-                if is_letter(entrada[index]):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index]  # * Agregar caracter al buffer
-                    estado = 2  # * Se cambia el estado en caso de ser necesario
+                if is_identifier(c):
+                    #print(c, end="")
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* modificar el estado
+                    columna += 1
+                    buffer += c
+                    estado = 2
                 else:
-                    # *Se hace una validacion por cada palabra reservada (total:13)
-                    if buffer == "RESULTADO":
-                        token = Token("RESULTADO", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                    #* no sumar a la columna  [ reconocer el token del buffer ]
+                    #* no agregar al buffer
+                    #* obtener el tipo de token
+                    #* crear el token
+                    #* agregar a la lista el token 
+                    #* limpiar el buffer
+                    #* retrocede el index
+                    #* modificar estado
+                    tipoToken = ""#* Se hace una validadacion por cada palabra reservada
+                    if buffer == "PARTIDOS":
+                        tipoToken = "partidos"
+                    elif buffer == "RESULTADO":
+                        tipoToken = "resultado"
                     elif buffer == "VS":
-                        token = Token("VS", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "vs"
                     elif buffer == "TEMPORADA":
-                        token = Token("TEMPORADA", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "temporada"
                     elif buffer == "JORNADA":
-                        token = Token("JORNADA", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "jornada"
                     elif buffer == "GOLES":
-                        token = Token("GOLES", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "goles"
                     elif buffer == "LOCAL":
-                        token = Token("LOCAL", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "local"
                     elif buffer == "VISITANTE":
-                        token = Token("VISITANTE", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "visitante"
                     elif buffer == "TOTAL":
-                        token = Token("TOTAL", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "total"
                     elif buffer == "TABLA":
-                        token = Token("TABLA", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "tabla"
                     elif buffer == "TOP":
-                        token = Token("TOP", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "top"
                     elif buffer == "SUPERIOR":
-                        token = Token("SUPERIOR", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "superior"
                     elif buffer == "INFERIOR":
-                        token = Token("INFERIOR", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "inferior"
                     elif buffer == "ADIOS":
-                        token = Token("ADIOS", buffer, linea, columna)
-                        self.listaTokens.append(token)
-                    elif buffer == "PARTIDOS":
-                        token = Token("PARTIDOS", buffer, linea, columna)
-                        self.listaTokens.append(token)
+                        tipoToken = "adios"
                     else:
-                        error = Error("Error léxico",buffer, linea, columna)
-                        self.listaErrores.append(error)
-                    buffer = "" #*Se limpia el buffer
-                    index -= 1  # *Retroceso de indice
-                    estado = 0  # * Retornamos al estado inicial
+                        tipoToken = "IDENTIFICADOR"
+                    token = Token(tipoToken, buffer, linea, columna)
+                    self.listaTokens.append(token)
+                    buffer = ""
+                    index -= 1
+                    estado = 0
             elif estado == 3:
-                if is_number(entrada[index]):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index]  # * Agregar caracter al buffer
-                    estado = 3  # * Se cambia el estado en caso de ser necesario
+                if c == "i":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* Creo el token
+                    #* agrego a la lista de tokens
+                    #* limpiar el buffer
+                    #* cambiar estado si es necesario
+                    columna += 1
+                    buffer += c
+                    token = Token("BANDERAINICIAL", buffer, linea, columna)
+                    self.listaTokens.append(token)
+                    buffer = ""
+                    estado = 0
+                elif c == "f":
+                    #* Sumar 1 a la columna
+                    #* Agregar al buffer
+                    #* Creo el token
+                    #* agrego a la lista de tokens
+                    #* limpiar el buffer
+                    #* cambiar estado si es necesario
+                    columna += 1
+                    buffer += c
+                    token = Token("BANDERAFINAL", buffer, linea, columna)
+                    self.listaTokens.append(token)
+                    buffer = ""
+                    estado = 0
+            elif estado == 4:
+                #*Digito
+                if is_number(c):
+                    #* Sumar a la columna
+                    #* Agregar al buffer
+                    #* modificar el estado
+                    columna += 1
+                    buffer += c
+                    estado = 4
                 else:
+                    #* no sumar a la columna  [ reconocer el token del buffer ]
+                    #* no agregar al buffer
+                    #* crear el token
+                    #* agregar a la lista el token 
+                    #* limpiar el buffer
+                    #* retroceder el index
+                    #* cambiar el estado
                     token = Token("ENTERO", buffer, linea, columna)
                     self.listaTokens.append(token)
-                    buffer = "" #*Se limpia el buffer
-                    index -= 1  # *Retroceso de indice
-                    estado = 0  # * Retornamos al estado inicial
-            elif estado == 4:
-                #*BANDERAS
-                #*Bandera -f y -jf
-                if (entrada[index] == "f"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
-                #*Bandera -n
-                elif (entrada[index] == "n"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
-                #*Bandera -ji
-                elif (entrada[index] == "i"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
-                #* Signos
-                elif(entrada[index] == "<"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
-                elif(entrada[index] == ">"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
-                elif(entrada[index] == '"'):
+                    buffer = ""
+                    index -= 1
+                    estado = 0
+            elif estado == 5:
+                if c == "\"":
                     columna += 1
-                    buffer += entrada[index]
+                    buffer += c
                     token = Token("CADENA", buffer, linea, columna)
                     self.listaTokens.append(token)
                     buffer = ""
-                else:
-                    #* Se validan las banderas
-                    if (buffer == "-f"):
-                        #print(buffer)
-                        token = Token("BANDERAEXPORTAR", buffer, linea, columna)
-                        self.listaTokens.append(token)
-                    elif (buffer == "-n"):
-                        #print(buffer)
-                        token = Token("BANDERATOP", buffer, linea, columna)
-                        self.listaTokens.append(token)
-                    elif (buffer == "-ji"):
-                        #print(buffer)
-                        token = Token("BANDERAINICIAL", buffer, linea, columna)
-                        self.listaTokens.append(token)
-                    elif (buffer == "-jf"):
-                        #print(buffer)
-                        token = Token("BANDERAFINAL", buffer, linea, columna)
-                        self.listaTokens.append(token)
-                    #* Se validan los signos
-                    elif (buffer == "<"):
-                        #print(buffer)
-                        token = Token("MENORQUE", buffer, linea, columna)
-                        self.listaTokens.append(token)
-                    elif (buffer == ">"):
-                        #print(buffer)
-                        token = Token("MAYORQUE", buffer, linea, columna)
-                        self.listaTokens.append(token)
-                    else:
-                        error = Error("Error lexico",buffer, linea, columna)
-                        self.listaErrores.append(error)
-                    buffer = ""
-                    index-=1
                     estado = 0
-            elif estado == 5:
-                if is_identifier(entrada[index]):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index]  # * Agregar caracter al buffer
-                    estado = 5  # * Se cambia el estado en caso de ser necesario
-                else:
-                    token = Token("IDENTIFICADOR", buffer, linea, columna)
-                    self.listaTokens.append(token)
-                    buffer = ""
-                    index -= 1 
-                    estado = 0
-            elif estado == 6:
-                if entrada[index] == '"':
-                    index -= 1
-                    estado = 4
                 else:
                     columna += 1
-                    buffer += entrada[index]
-                    estado = 6
-            elif estado == 7:
-                #*BANDERAS 
-                if (entrada[index] == "j" and entrada[index+1] == "i"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
-                if (entrada[index] == "j" and entrada[index+1] == "f"):
-                    columna += 1  # * Se suma uno a la columna
-                    buffer += entrada[index] # * Agregar caracter al buffer
-                    estado = 4  # * Se cambia el estado en caso de ser necesario
+                    buffer += c
+                    estado = 5
             index += 1
-            
-            #token = Token("BANDERAEXPORTAR", buffer, linea, columna)
     
     def imprimirDatos(self):
         print("\n\n\n")
@@ -280,19 +294,9 @@ class AnalizadorLexico():
         for error in self.listaErrores:
             print(error.getInfo())
 
-    #*Se dejo a las palabras reservadas del lenguaje con mayusculas, por tanto solo se evaluan las mayusculas y no las minusculas
-    #*ya que la combinacion de ambas es para los identificadores.
-def is_letter (caracter):
-    mayusculas =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z","Á","É","Í","Ó","Ú"]
-    
-    if caracter in mayusculas:
-        return True
-    else:
-        return False
-    
-def is_letter2 (caracter):
-    mayusculas =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z","Á","É","Í","Ó","Ú"]
-    minusculas = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","ñ","o","p","q","r","s","t","u","v","w","x","y","z","á","é","í","ó","ú"]
+def is_letter(caracter):
+    mayusculas =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Á","É","Í","Ó","Ú"]
+    minusculas = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","á","é","í","ó","ú"]
     if caracter in mayusculas or caracter in minusculas:
         return True
     else:
@@ -308,8 +312,8 @@ def is_number(caracter):
     
 def is_identifier(caracter):
     numeros = ["0","1","2","3","4","5","6","7","8","9"]
-    mayusculas =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z","Á","É","Í","Ó","Ú"]
-    minusculas = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","ñ","o","p","q","r","s","t","u","v","w","x","y","z","á","é","í","ó","ú"]
+    mayusculas =["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Á","É","Í","Ó","Ú"]
+    minusculas = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","á","é","í","ó","ú"]
     guionbajo =["_"]
 
     if caracter in numeros or caracter in mayusculas or caracter in minusculas or caracter in guionbajo:
@@ -330,7 +334,8 @@ def is_identifier(caracter):
         En la temporada 2019-2020 el Levante anoto 15 goles de local
         generando archivo de clasificacion temporada 2019-2020
 """  
-cadena = 'PARTIDOS "Real Madrid" TEMPORADA <1999-2000> -f reporteEspanol -ji 1 -jf 18'
+cadena = 'PARTIDOS "Real ñ Madrid" TEMPORADA <1999-2000> $ -fa2 reporteEspanol* ;ñ -ji 1 -jf 18'
+cadena2 = 'PARTIDOS "Español" TEMPORADA <1999-2000> -f reporteEspanol'
 analisis_cadena = AnalizadorLexico()
-analisis_cadena.analizarEntrada(cadena, 1)
+analisis_cadena.analizarEntrada(cadena2, 1)
 analisis_cadena.imprimirDatos()
