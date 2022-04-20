@@ -53,3 +53,47 @@ reservadas, seran identificadores.
 
 La segunda es hacer un diagrama de transicion por cada palabra reservada, para diferenciarlas de un
 identificador.
+
+S ::= INICIO
+
+INICIO ::= RESULTADO
+         | JORNADA
+         | GOLES
+         | TABLA
+         | PARTIDOS
+         | TOP
+         | ADIOS
+        
+EQUIPO ::= cadena
+ANIO ::= numero
+        
+BANDERAEXPORTAR ::= banderaexportar identificador
+                  | BANDERAIJ
+                  | Epsilon (<<EOF>>)
+
+CONDICIONG ::= local
+             | visitante
+             | total
+
+BANDERAIJ ::= banderainicial numero banderafinal numero
+            | Epsilon (<<EOF>>)
+
+CONDICIONT ::= superior
+             | inferior
+
+BANDERATOP ::= banderatop numero 
+             | Epsilon 
+
+RESULTADO ::= resultado EQUIPO vs EQUIPO temporada menorque ANIO guion ANIO mayorque
+
+JORNADA ::= jornada NUM_J temporada menorque ANIO guion ANIO mayorque BANDERAEXPORTAR
+
+GOLES ::= goles CONDICIONG EQUIPO temporada menorque ANIO guion ANIO mayorque
+
+TABLA ::= tabla temporada menorque ANIO guion ANIO mayorque BANDERAEXPORTAR
+
+PARTIDOS ::= partidos EQUIPO temporada menorque ANIO guion ANIO mayorque BANDERAEXPORTAR BANDERAIJ
+
+TOP ::= top CONDICIONT temporada menorque ANIO guion ANIO mayorque BANDERATOP
+
+ADIOS ::= adios

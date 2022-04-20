@@ -4,23 +4,31 @@ from tkinter import ttk
 from Partido import Partido
 from LectorArchivo import *
 from AnalizadorLexico import *
+from AnalizadorSintactico import * 
 from Token import Token
 from Error import Error
+from Funciones import *
 
 global textarea, reporte_errores, clean_log_errors, reporte_tokens, m_u, m_t, send, caja_texto
-global listaTokens, listaErroresL, listaErroresS, mi_canvas, textarea2
+global listaTokens, listaErroresL, listaErroresS, mi_canvas, textarea2, rowb, rowu, columnb, columnu
 
+lts_p = []
 listaTokens = []
 listaErroresL = []
 listaErroresS = []
-def analisisLexico():
+rowb = 1 #*Fila del bot, siempre va en filas impares
+rowu = 2 #*Fila del ususario
+columnb = 0
+columnu = 1
+
+def analizadores():
     pass
 
 
 
 
 def moveTextToTextArea():
-    global textarea, caja_texto
+    global textarea2, caja_texto, rowb, rowu, columnb, columnu
     ''' 
     Ya no se usara como tal el scrolledtext, en vez de esto se cambiara por un frame, el cual
     almacenara un todos los mensajes que se presentaran al usuario tanto los nombres como
@@ -29,9 +37,16 @@ def moveTextToTextArea():
     comando = ""
     comando = caja_texto.get()
     if comando != "":
-        comando += "\n"
+        Label(textarea2, borderwidth=1 ,relief="raised",text=comando,bg="#121707", fg="#FBFCFC", font=("Helvetica", 10)).grid(row=1, column=1, pady=5, padx=10) #*, sticky="nsew"
+        analisis_comando = AnalizadorLexico()
+        lts_tokens = analisis_comando.analizarEntrada(comando, 1)
+        analisis_comando.imprimirDatos()
         
-        print(comando)
+        analisis_sintactico = AnalizadorSintactico(lts_tokens)
+        analisis_sintactico.analizarEntrada()
+        analisis_sintactico.imprimirDatos()
+        
+        #print(comando)
     else:
         messagebox.showerror("Error!!!","La caja de texto no contiene ningún comando a leer")
 
@@ -90,13 +105,18 @@ def crearVentanaPrincipal():
     #*Se agrega este nuevo frame a la ventana en el canvas
     mi_canvas.create_window((0,0), window=textarea2, anchor='nw', width=950)
     
-    bienvenida = Label(textarea2, text="Bienvenido a La Liga Bot, Ingrese un comando" ,bg="#121707", fg="#FBFCFC", font=("Helvetica", 11)) #, anchor='e'
+    bienvenida = Label(textarea2, text="Bienvenido a La Liga Bot, Ingrese un comando" ,bg="#121707", fg="#FBFCFC", font=("Helvetica", 11), relief="raised") #, anchor='e'
     bienvenida.grid(row=0,column=0, sticky="nsew")
     
-    salida1 = Label(textarea2, text="generando archivo de resultados de jornada 20 temporada 2015-2016" ,bg="#121707", fg="#FBFCFC", font=("Helvetica", 11)) #, anchor='e'
-    salida1.grid(row=2,column=0, sticky="nsew")
+    # salida1 = Label(textarea2, text="generando archivo de resultados de jornada 20 temporada 2015-2016" ,bg="#121707", fg="#FBFCFC", font=("Helvetica", 11)) #, anchor='e'
+    # salida1.grid(row=2,column=0, sticky="nsew")
     # for thing in range(100):
     #     #Label(textarea2, text="Bienvenido a La Liga Bot, Ingrese un comando").grid(row=thing, column=0, sticky="nsew", pady=10, padx=10)
     #     Label(textarea2, borderwidth=1 ,relief="raised",text='RESULTADO "Real Madrid" vs "Villareal" TEMPORADA <2019-2020>',bg="#121707", fg="#FBFCFC", font=("Helvetica", 10)).grid(row=thing, column=1, sticky="nsew", pady=10, padx=10)
+    
+    #lts_p = enviarListaPartidos()
+    obtenerPartidos(enviarListaPartidos())
+    
+    # print(lts_p[0])
     
     ventana.mainloop()

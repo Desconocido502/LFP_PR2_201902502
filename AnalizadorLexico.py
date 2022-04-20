@@ -59,7 +59,7 @@ class AnalizadorLexico():
                     #* cambiar estado si es necesario
                     columna += 1
                     buffer += c
-                    token = Token("MENORQUE", buffer, linea, columna)
+                    token = Token("MAYORQUE", buffer, linea, columna)
                     self.listaTokens.append(token)
                     buffer = ""
                     estado = 0
@@ -106,6 +106,7 @@ class AnalizadorLexico():
                         token = Token("<<EOF>>", buffer, linea, columna)
                         self.listaTokens.append(token)
                         print("Analisis exitoso")
+                        return self.listaTokens
                     else:
                         error = Error("Error Lexico", buffer, linea, columna)
                         self.listaErrores.append(error)
@@ -129,7 +130,7 @@ class AnalizadorLexico():
                     #* cambiar estado si es necesario
                     columna += 1
                     buffer += c
-                    token = Token("BANDERAEXPORTAR", buffer, linea, columna)
+                    token = Token("banderaexportar", buffer, linea, columna)
                     self.listaTokens.append(token)
                     buffer = ""
                     estado = 0
@@ -142,7 +143,7 @@ class AnalizadorLexico():
                     #* cambiar estado si es necesario
                     columna += 1
                     buffer += c
-                    token = Token("BANDERATOP", buffer, linea, columna)
+                    token = Token("banderatop", buffer, linea, columna)
                     self.listaTokens.append(token)
                     buffer = ""
                     estado = 0
@@ -231,7 +232,7 @@ class AnalizadorLexico():
                     #* cambiar estado si es necesario
                     columna += 1
                     buffer += c
-                    token = Token("BANDERAINICIAL", buffer, linea, columna)
+                    token = Token("banderainicial", buffer, linea, columna)
                     self.listaTokens.append(token)
                     buffer = ""
                     estado = 0
@@ -244,7 +245,7 @@ class AnalizadorLexico():
                     #* cambiar estado si es necesario
                     columna += 1
                     buffer += c
-                    token = Token("BANDERAFINAL", buffer, linea, columna)
+                    token = Token("banderafinal", buffer, linea, columna)
                     self.listaTokens.append(token)
                     buffer = ""
                     estado = 0
@@ -322,7 +323,7 @@ def is_identifier(caracter):
         return False
 
 """
-        RESULTADO "Real Madrid" vs "Villareal" TEMPORADA <2019-2020>
+        RESULTADO "Real Madrid" VS "Villareal" TEMPORADA <2019-2020>
         JORNADA 1 TEMPORADA <1996-1997> -f jornada1Reporte | JORNADA 12 TEMPORADA <1996-1997>
         GOLES TOTAL "Valencia" TEMPORADA <1998-1999> | GOLES LOCAL "Zaragoza" TEMPORADA <1998-1999>
         TABLA TEMPORADA <2018-2019> | TABLA TEMPORADA <1996-1997> -f reporteGlobal1
@@ -334,8 +335,8 @@ def is_identifier(caracter):
         En la temporada 2019-2020 el Levante anoto 15 goles de local
         generando archivo de clasificacion temporada 2019-2020
 """  
-cadena = 'PARTIDOS "Real ñ Madrid" TEMPORADA <1999-2000> $ -fa2 reporteEspanol* ;ñ -ji 1 -jf 18'
-cadena2 = 'PARTIDOS "Español" TEMPORADA <1999-2000> -f reporteEspanol'
-analisis_cadena = AnalizadorLexico()
-analisis_cadena.analizarEntrada(cadena2, 1)
-analisis_cadena.imprimirDatos()
+# cadena = 'PARTIDOS "Real ñ Madrid" TEMPORADA <1999-2000> $ -fa2 reporteEspanol* ;ñ -ji 1 -jf 18'
+# cadena2 = 'PARTIDOS "Español" TEMPORADA <1999-2000> -f reporteEspanol'
+# analisis_cadena = AnalizadorLexico()
+# analisis_cadena.analizarEntrada(cadena2, 1)
+# analisis_cadena.imprimirDatos()
