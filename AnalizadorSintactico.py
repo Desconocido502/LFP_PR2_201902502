@@ -3,6 +3,10 @@ class AnalizadorSintactico():
     def __init__(self, tokens: list):
         self.listaErrores = []
         self.tokens = tokens
+        self.lts_datos = [] #*Lista de datos, variara segun la gramatica en que este
+    
+    def getLtsDatos(self):
+        return self.lts_datos
     
     def agregarError(self, tipo, lexema, linea, columna):
         error = Error(tipo, lexema, linea, columna)
@@ -131,8 +135,8 @@ class AnalizadorSintactico():
                                             elif token.tipo == "MAYORQUE":
                                                 #* Se llama a la funcionalidad
                                                 print("Analis sintactico de la primer gramatica completada con exito!!")
-                                                print(equipo_local, equipo_visitante, anio_inicial, anio_final)
-                                                pass                                                
+                                                #print(equipo_local, equipo_visitante, anio_inicial, anio_final)
+                                                self.lts_datos = ["resultado",equipo_local, equipo_visitante, anio_inicial, anio_final]
                                             else:
                                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                                                 #Venia algo mas que no era entero

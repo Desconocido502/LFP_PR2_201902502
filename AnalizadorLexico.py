@@ -105,8 +105,8 @@ class AnalizadorLexico():
                     if index == (len(entrada) - 1) :
                         token = Token("<<EOF>>", buffer, linea, columna)
                         self.listaTokens.append(token)
-                        print("Analisis exitoso")
-                        return self.listaTokens
+                        # print("Analisis exitoso")
+                        # return self.listaTokens
                     else:
                         error = Error("Error Lexico", buffer, linea, columna)
                         self.listaErrores.append(error)
