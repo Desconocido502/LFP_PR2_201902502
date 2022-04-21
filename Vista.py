@@ -2,6 +2,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
+import time
 
 FONT_BOLD = "Helvetica 13 bold"
 FONT_BOLD2 = "Helvetica 12 bold"
@@ -136,12 +137,20 @@ class Vista(ttk.Frame):
                 self.msg_var.set("")
                 
                 #*Aqui tendriamos que tener la respuesta del 'bot'
-                
+                #*Se tiene que crear otra funcion que sea la que devuelva la salida, y esta es llamada 
+                #*Desde el controlador --> funcion => printResponse
             else:
                 #print("cadena vacia")
                 self.message_label['text'] = "La caja de texto esta vacia!!!\n ingrese un comando!!!"
                 self.message_label.after(3000, self.hide_message)
-
+    
+    #*Añade respuestas del bot al cuadro de texto
+    def printResponse(self, data): #*data puede ser cualquier
+        time.sleep(0.3) #* se espera 500 milsemimas de segundo = la mitad de un segundo
+        self.text_widget.configure(state=NORMAL) #*Se prepara la consola para recibir el texto
+        self.text_widget.insert(END, data) #*Se inserta el comando a la consola
+        self.text_widget.configure(state=DISABLED) #* Se cierra para que no se pueda escribir en la consola
+    
     def show_msg_open_manual_succesfully(self, message):
         self.message_label['text'] = message
         self.message_label.after(3000, self.hide_message)

@@ -11,6 +11,8 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
         self.partidos : list = self.leerArchivo() #*Retorna la lista de los partidos
         self.lts_tokensG = []
         self.lts_erroresG = []
+        self.lts_tokens_tmp = None #*Contendra la lista de tokens por cada vuelta(es una lista de tokens temporal)
+        self.lts_datos = None #* Contendra cualquiera de los datos de las 7 gramaticas
     
     def clean_lts_bugs(self):
         self.lts_erroresG = []
@@ -48,20 +50,55 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
         self.lts_tokensG += analisis_lexico_comando.getListaTokens()
         #*Se suma cada nueva lista de errores lexicos a la lista de errores general
         self.lts_erroresG += analisis_lexico_comando.getListaErrores()
+        self.lts_tokens_tmp = analisis_lexico_comando.getListaTokens() #*lista de tokens temporal
+        
+    def analisisSintactico(self):
         # self.imprimirDatos() #*Si se suman las cadena de tokens y de errores
         #*Se procede a realizar el analisis sintactico, se obtendra una lista, que puede contener cualquiera de los
         #* datos de los 7 comandos, por eso, se enviara en la primera posicion de la lista, que tipo de gramatica
         #*fue la que se trabajo, por eso hay que validar que informacion se manda a la vista
-        analisis_sintactico_comando = AnalizadorSintactico(analisis_lexico_comando.getListaTokens())
+        analisis_sintactico_comando = AnalizadorSintactico(self.lts_tokens_tmp) #*Lista temporal de tokens
         analisis_sintactico_comando.analizarEntrada()
         
         #*Nos faltan las demas gramaticas, hay unas por corregir, pero os vamos a hacer mejor los html de tokens y errores lexicos
-        lts_datos = analisis_sintactico_comando.getLtsDatos()#*Se retorna la lista de datos
-        if lts_datos == None:
+        self.lts_datos = analisis_sintactico_comando.getLtsDatos()#*Se retorna la lista de datos
+        #!Nos quedamos aqui
+    def returnResponse(self):
+        if self.lts_datos == None:
             print("Venia cadena vacia y por tanto <<EOF>>")
-        elif lts_datos[0] == "resultado":
-            print(lts_datos[1], lts_datos[2], lts_datos[3], lts_datos[4])
-        else:
+        elif self.lts_datos[0] == "resultado":
+            equipo_local = self.lts_datos[1].replace('"', '') 
+            equipo_visitante = self.lts_datos[2].replace('"', '')
+            anio_inicial = self.lts_datos[3]
+            anio_final = self.lts_datos[4]
+            found_partido = self.result_of_a_match(equipo_local, equipo_visitante, anio_inicial, anio_final) #*Devuelve un objeto Partido
+            #print(found_partido)
+            #*Se arma la respuesa texto, para ser enviada a la vista
+            txt_response = f"BOT: El resultado de este partido fue: {found_partido.getEquipoLocal()} {found_partido.getGolesLocal()} - {found_partido.getEquipoVisitante()} {found_partido.getGolesLocal()}\n\n"
+            return txt_response #*Se retorna la respuesta del 'bot'
+            #print(txt_response)
+            #print(equipo_local, equipo_visitante, anio_inicial, anio_final)
+        elif self.lts_datos[0] == "jornada-c": #*Para el caso donde el archivo html se le de un nombre en especifico
+            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3], self.lts_datos[4])
+        elif self.lts_datos[0] == "jornada-i": #*Para el caso donde el archivo html tendra un nombre por default
+            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3])
+        elif self.lts_datos[0] == "goles":
+            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3], self.lts_datos[4])
+        elif self.lts_datos[0] == "tabla-c": #*Para el caso donde el archivo html se le de un nombre en especifico
+            print(self.lts_datos[1], self.lts_datos[2], lts_datos[3])
+        elif self.lts_datos[0] == "tabla-i": #*Para el caso donde el archivo html tendra un nombre por default
+            print(self.lts_datos[1], self.lts_datos[2])
+        elif self.lts_datos[0] == "partidos-f": #*Para el caso donde el archivo html se le de un nombre en especifico
+            print(self.lts_datos[1], self.lts_datos[2], lts_datos[3], lts_datos[4])
+        elif self.lts_datos[0] == "partidos-i": #*Para el caso donde el archivo html tendra un nombre por default
+            print(self.lts_datos[1], self.lts_datos[2], lts_datos[3], lts_datos[4], lts_datos[5])
+        elif self.lts_datos[0] == "top-c": #*Para el caso donde se da un numero de equipos en especifico a mostrar
+            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3], self.lts_datos[4])
+        elif self.lts_datos[0] == "top-i": #*Para el caso donde no se da un numero de equipos en especifico a mostrar
+            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3])
+        elif self.lts_datos[0] == "adios": 
+            print("adios")
+        else: #*Si no es ninguno de los tokens inciales, viene un token que no es parte del inicio de una gramatica
             pass
     
     #*Se crea el reporte de Tokens
@@ -194,6 +231,16 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
         else:
             print("No hay informacion con que crear el HTML")
     
+    def result_of_a_match(self, equipo_local, equipo_visitante, anio_inicial, anio_final):
+        #print(equipo_local, equipo_visitante, anio_inicial, anio_final)
+        #*Primero se tendra que buscar por temporada, y guardarlos en una lista
+        #*Luego buscar en esa lista, los nombres de los equipos
+        #*Por ultimo, ya se manda a mostrar los datos
+        temporada = anio_inicial+"-"+anio_final
+        lts_season = self.search_for_season(temporada)
+        partido = self.sear_for_team(lts_season, equipo_local, equipo_visitante)
+        return partido
+    
     def open_user_manual(self):
         startfile("Manual de Usuario.pdf")
     
@@ -209,6 +256,26 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
         print("********************* Lista Errores")
         for error in self.lts_erroresG:
             print(error.getInfo())
+    
+    #*Retorna una lista con la temporada buscada
+    def search_for_season(self, season):
+        lts_season = []
+        #print(len(self.partidos))
+        #print(self.partidos[0].getTemporada())
+        for partido in self.partidos:
+            if (partido.getTemporada() == season):
+                #print(partido)
+                lts_season.append(partido)
+        return lts_season
+    
+    #*Retorna un partido
+    def sear_for_team(self, lts_season, team1, team2):
+        #print(lts_season[0], team1, team2)
+        for season in lts_season:
+            #print(season.getEquipoLocal(), ",",season.getEquipoVisitante())
+            if(team1 == season.getEquipoLocal() and team2 == season.getEquipoVisitante()):
+                return season
+        return None
 
 # modelo = Modelo("Prueba")
 # print(modelo.partidos[0])

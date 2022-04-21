@@ -323,7 +323,7 @@ def is_identifier(caracter):
         return False
 
 """
-        RESULTADO "Real Madrid" VS "Villareal" TEMPORADA <2019-2020>
+        RESULTADO "Real Madrid" VS "Villareal" TEMPORADA <2019-2020> | RESULTADO "Levante" VS "Espanyol" TEMPORADA <2017-2018>
         JORNADA 1 TEMPORADA <1996-1997> -f jornada1Reporte | JORNADA 12 TEMPORADA <1996-1997>
         GOLES TOTAL "Valencia" TEMPORADA <1998-1999> | GOLES LOCAL "Zaragoza" TEMPORADA <1998-1999>
         TABLA TEMPORADA <2018-2019> | TABLA TEMPORADA <1996-1997> -f reporteGlobal1

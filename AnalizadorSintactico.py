@@ -230,7 +230,11 @@ class AnalizadorSintactico():
                                         identificador = self.BANDERAEXPORTAR()
                                         #* Se llama a la funcionalidad
                                         print("Analis sintactico de la segunda gramatica completada con exito!!")
-                                        print(num_jornada, anio_inicial, anio_final, identificador)
+                                        #print(num_jornada, anio_inicial, anio_final, identificador)
+                                        if identificador != None:
+                                            self.lts_datos = ["jornada-c",num_jornada, anio_inicial, anio_final, identificador]
+                                        else:
+                                            self.lts_datos = ["jornada-i",num_jornada, anio_inicial, anio_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                                         #Venia algo mas que no era mayorque
@@ -430,8 +434,8 @@ class AnalizadorSintactico():
                                         elif token.tipo == "MAYORQUE":
                                             #*Se llama a la funcionalidad
                                             print("Analis sintactico de la tercera gramatica completada con exito!!")
-                                            print(condiciong, name_equipo, anio_inicial, anio_final)
-                                            pass                                                                                            
+                                            #print(condiciong, name_equipo, anio_inicial, anio_final)
+                                            self.lts_datos = ["goles", condiciong, name_equipo, anio_inicial, anio_final]                                                                                            
                                         else:
                                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                                             #Venia algo mas que no era mayorque                                               
@@ -516,7 +520,10 @@ class AnalizadorSintactico():
                                     #* Se llama a la funcionalidad
                                     print("Analis sintactico de la cuarta gramatica completada con exito!!")
                                     print(anio_inicial, anio_final, identificador)
-                                    pass
+                                    if identificador != None:
+                                        self.lts_datos = ["tabla-c", anio_inicial, anio_final, identificador]
+                                    else:
+                                        self.lts_datos = ["tabla-i", anio_inicial, anio_final]
                                 else:
                                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                                     #Venia algo mas que no era mayorque
@@ -608,8 +615,10 @@ class AnalizadorSintactico():
                                         #jornada_final = lts_indices[1]
                                         print(name_equipo, anio_inicial, anio_final, identificador)
                                         #print(name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final)
-                                        
-                                        pass
+                                        if identificador != None:
+                                            self.lts_datos["partidos-f", name_equipo, anio_inicial, anio_final, identificador]
+                                        elif identificador == None and lts_indices != None:
+                                            self.lts_datos = ["partidos-i",name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                                         #Venia algo mas que no era mayorque
@@ -694,7 +703,10 @@ class AnalizadorSintactico():
                                     elif token.tipo == "MAYORQUE":
                                         num_equipos = self.BANDERATOP()
                                         print(condicion, anio_inicial, anio_final, num_equipos)
-                                        pass
+                                        if num_equipos != None:
+                                            self.lts_datos = ["top-c",condicion, anio_inicial, anio_final, num_equipos]
+                                        else:
+                                            self.lts_datos = ["top-i",condicion, anio_inicial, anio_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                                         #Venia algo mas que no era mayorque
@@ -735,6 +747,7 @@ class AnalizadorSintactico():
             elif token.tipo == "<<EOF>>":
                 #*Se hace la funcionalidad
                 print("Hasta luego...")
+                self.lts_datos = ["adios"]
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                 #Venia algo mas que no era <<EOF>>
