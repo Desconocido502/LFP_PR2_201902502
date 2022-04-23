@@ -328,6 +328,7 @@ class AnalizadorSintactico():
                     elif token.tipo == "ENTERO":
                         #*Regreso los numeros encontrados
                         numero_final = token.lexema
+                        #print(numero_inicial, numero_final)
                         numeros = [numero_inicial, numero_final]
                         return numeros
                     else:
@@ -610,14 +611,14 @@ class AnalizadorSintactico():
                                         #*respectivas se haran en la funcion de BANDERAEXPORTAR
                                         identificador = self.BANDERAEXPORTAR()
                                         #*Nos falta hacer las validaciones de si vienen vacios o no en las banderas
-                                        lts_indices = self.BANDERAIJ() #* Nos devuelve los indices en caso de que existan
-                                        #jornada_inicial = lts_indices[0]
-                                        #jornada_final = lts_indices[1]
-                                        print(name_equipo, anio_inicial, anio_final, identificador)
+                                        lts_indices = self.BANDERAIJ() #* Nos devuelve los indices en caso de que existan.
                                         #print(name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final)
-                                        if identificador != None:
-                                            self.lts_datos["partidos-f", name_equipo, anio_inicial, anio_final, identificador]
-                                        elif identificador == None and lts_indices != None:
+                                        if identificador != None and identificador != "":
+                                            #print(name_equipo, anio_inicial, anio_final, identificador)
+                                            self.lts_datos = ["partidos-f", name_equipo, anio_inicial, anio_final, identificador]
+                                        else:
+                                            jornada_inicial = lts_indices[0]
+                                            jornada_final = lts_indices[1]
                                             self.lts_datos = ["partidos-i",name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
