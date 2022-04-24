@@ -1,5 +1,6 @@
 from Modelo import Modelo
 from Vista import Vista
+from threading import Timer
 
 class Controlador():
     def __init__(self, modelo, vista):
@@ -16,7 +17,14 @@ class Controlador():
         data = self.modelo.returnResponse() #*Devuelve la respuesta segun el comando en una cadena de texto
         self.vista.printResponse(data)
         self.vista.show_msg_open_manual_succesfully("Comando leído sin \nningún problema...")
+        
+        if(data == "BOT: \t\tADIOS"):
+            t = Timer(0.6, self.stopProcess)
+            t.start()
+
     
+    def stopProcess(self):
+        self.vista.quitWindow()#*Cierra la ventana
     
     #*Funcion para crear el html de los errores
     def show_bug_in_html(self):

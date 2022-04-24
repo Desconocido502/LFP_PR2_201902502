@@ -162,3 +162,7 @@ class Vista(ttk.Frame):
         :return:
         """
         self.message_label['text'] = ''
+    
+    #*Cerrar la ventana
+    def quitWindow(self):
+        self.parent.quit()
