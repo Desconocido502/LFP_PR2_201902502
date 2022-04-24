@@ -1,12 +1,15 @@
 from Error import Error
 class AnalizadorSintactico():
     def __init__(self, tokens: list):
-        self.listaErrores = []
+        self.listaErrores : list = []
         self.tokens = tokens
         self.lts_datos = [] #*Lista de datos, variara segun la gramatica en que este
     
     def getLtsDatos(self):
         return self.lts_datos
+    
+    def getLtsErrores(self):
+        return self.listaErrores
     
     def agregarError(self, tipo, lexema, linea, columna):
         error = Error(tipo, lexema, linea, columna)
@@ -62,6 +65,7 @@ class AnalizadorSintactico():
         else:
             error = Error("error sintactico", temporal.lexema, temporal.linea, temporal.columna)
             self.listaErrores.append(error)
+            self.lts_datos = ["Error-r"]
     
     def RESULTADO(self):
         #* Comando devulve el resultado de un partido
@@ -134,11 +138,13 @@ class AnalizadorSintactico():
                                                 return
                                             elif token.tipo == "MAYORQUE":
                                                 #* Se llama a la funcionalidad
-                                                print("Analis sintactico de la primer gramatica completada con exito!!")
+                                                #print("Analis sintactico de la primer gramatica completada con exito!!")
                                                 #print(equipo_local, equipo_visitante, anio_inicial, anio_final)
                                                 self.lts_datos = ["resultado",equipo_local, equipo_visitante, anio_inicial, anio_final]
                                             else:
                                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                                #*El token MAYORQUE es casi inncesario, es por eso que a pesar de que no venga, hay que dar respuesta
+                                                self.lts_datos = ["resultado",equipo_local, equipo_visitante, anio_inicial, anio_final]
                                                 #Venia algo mas que no era mayorque
                                         else:
                                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
@@ -245,7 +251,7 @@ class AnalizadorSintactico():
                                         #*respectivas se haran en la funcion de BANDERAEXPORTAR
                                         identificador = self.BANDERAEXPORTAR()
                                         #* Se llama a la funcionalidad
-                                        print("Analis sintactico de la segunda gramatica completada con exito!!")
+                                        #print("Analis sintactico de la segunda gramatica completada con exito!!")
                                         #print(num_jornada, anio_inicial, anio_final, identificador)
                                         if identificador != None:
                                             self.lts_datos = ["jornada-c",num_jornada, anio_inicial, anio_final, identificador]
@@ -253,24 +259,43 @@ class AnalizadorSintactico():
                                             self.lts_datos = ["jornada-i",num_jornada, anio_inicial, anio_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                        #*El token MAYORQUE es casi innecesario que venga, por tanto hacemos un cambio minimo
+                                        #*Ya que la mayoria de datos importantes en este punto estarian disponibles
+                                        identificador = self.BANDERAEXPORTAR()
+                                        if identificador != None:
+                                            self.lts_datos = ["jornada-c",num_jornada, anio_inicial, anio_final, identificador]
+                                        else:
+                                            self.lts_datos = ["jornada-i",num_jornada, anio_inicial, anio_final]
                                         #Venia algo mas que no era mayorque
                                 else:
                                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                    self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                    return
                                     #Venia algo mas que no era entero
                             else:
                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                self.lts_datos = ["Error", "GUION", token.tipo, token.linea, token.columna]
+                                return
                                 #Venia algo mas que no era guion
                         else:
                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                            self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                            return
                             #Venia algo mas que no era entero
                     else:
                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                        self.lts_datos = ["Error", "MENORQUE", token.tipo, token.linea, token.columna]
+                        return
                         #Venia algo mas que no era menorque
                 else:
                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                    self.lts_datos = ["Error", "TEMPORADA", token.tipo, token.linea, token.columna]
+                    return
                     #Venia algo mas que no era temporada
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era entero
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
@@ -461,15 +486,23 @@ class AnalizadorSintactico():
                         return numeros
                     else:
                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                        self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                        return
                         #Venia algo mas que no era entero
                 else:
                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                    self.lts_datos = ["Error", "BANDERAFINAL", token.tipo, token.linea, token.columna]
+                    return
                     #Venia algo mas que no era banderafinal
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era entero
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+            self.lts_datos = ["Error", "BANDERAEXPORTAR", token.tipo, token.linea, token.columna]
+            return
             #Venia algo mas que no era banderainicial
     
     def BANDERATOP(self):
@@ -480,6 +513,11 @@ class AnalizadorSintactico():
         num_equipos = ""
         #* Sacar token --- se espera banderatop
         token = self.sacarToken()
+        
+        if token is None:
+            self.agregarError("error sintactico", "<<EOF>>", "", "")
+            return
+        
         if token.tipo == "banderatop":
             #* Sacar otro token --- se espera entero
             token = self.sacarToken()
@@ -491,9 +529,13 @@ class AnalizadorSintactico():
                 return num_equipos
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era entero
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+            self.lts_datos = ["Error", "BANDERATOP", token.tipo, token.linea, token.columna]
+            return
             #Venia algo mas que no era banderatop
     
     def GOLES(self):
@@ -562,32 +604,48 @@ class AnalizadorSintactico():
                                             return                                               
                                         elif token.tipo == "MAYORQUE":
                                             #*Se llama a la funcionalidad
-                                            print("Analis sintactico de la tercera gramatica completada con exito!!")
+                                            #print("Analis sintactico de la tercera gramatica completada con exito!!")
                                             #print(condiciong, name_equipo, anio_inicial, anio_final)
                                             self.lts_datos = ["goles", condiciong, name_equipo, anio_inicial, anio_final]                                                                                            
                                         else:
                                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                            #*El token MAYORQUE es casi inncesario, es por eso que a pesar de que no venga, hay que dar respuesta
+                                            self.lts_datos = ["goles", condiciong, name_equipo, anio_inicial, anio_final]                                                                                            
                                             #Venia algo mas que no era mayorque                                               
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                        self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                        return
                                         #Venia algo mas que no era entero                                              
                                 else:
                                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                    self.lts_datos = ["Error", "GUION", token.tipo, token.linea, token.columna]
+                                    return
                                     #Venia algo mas que no era guion                                                  
                             else:
                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                return
                                 #Venia algo mas que no era entero                                              
                         else:
                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                            self.lts_datos = ["Error", "MENORQUE", token.tipo, token.linea, token.columna]
+                            return
                             #Venia algo mas que no era menorque                                              
                     else:
                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                        self.lts_datos = ["Error", "TEMPORADA", token.tipo, token.linea, token.columna]
+                        return
                         #Venia algo mas que no era temporada                                                       
                 else:
                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                    self.lts_datos = ["Error", "CADENA", token.tipo, token.linea, token.columna]
+                    return
                     #Venia algo mas que no era cadena                                        
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "CONDICION", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era  ni local, ni visitante ni total 
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
@@ -647,7 +705,7 @@ class AnalizadorSintactico():
                                     #*respectivas se haran en la funcion de BANDERAEXPORTAR
                                     identificador = self.BANDERAEXPORTAR()
                                     #* Se llama a la funcionalidad
-                                    print("Analis sintactico de la cuarta gramatica completada con exito!!")
+                                    #print("Analis sintactico de la cuarta gramatica completada con exito!!")
                                     #print(anio_inicial, anio_final, identificador)
                                     if identificador != None:
                                         self.lts_datos = ["tabla-c", anio_inicial, anio_final, identificador]
@@ -655,21 +713,38 @@ class AnalizadorSintactico():
                                         self.lts_datos = ["tabla-i", anio_inicial, anio_final]
                                 else:
                                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                    #*El token MAYORQUE es casi innecesario que venga, por tanto hacemos un cambio minimo
+                                    #*Ya que la mayoria de datos importantes en este punto estarian disponibles
+                                    identificador = self.BANDERAEXPORTAR()
+                                    if identificador != None:
+                                        self.lts_datos = ["tabla-c", anio_inicial, anio_final, identificador]
+                                    else:
+                                        self.lts_datos = ["tabla-i", anio_inicial, anio_final]
                                     #Venia algo mas que no era mayorque
                             else:
                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                return
                                 #Venia algo mas que no era entero
                         else:
                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                            self.lts_datos = ["Error", "GUION", token.tipo, token.linea, token.columna]
+                            return
                             #Venia algo mas que no era guion
                     else:
                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                        self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                        return
                         #Venia algo mas que no era entero
                 else:
                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                    self.lts_datos = ["Error", "MENORQUE", token.tipo, token.linea, token.columna]
+                    return
                     #Venia algo mas que no era menorque
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "TEMPORADA", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era temporada
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
@@ -752,25 +827,39 @@ class AnalizadorSintactico():
                                             self.lts_datos = ["partidos-i", name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                        self.lts_datos = ["Error", "MAYORQUE", token.tipo, token.linea, token.columna]
+                                        return
                                         #Venia algo mas que no era mayorque
                                 else:
                                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                    self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                    return
                                     #Venia algo mas que no era entero
                             else:
                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                self.lts_datos = ["Error", "GUION", token.tipo, token.linea, token.columna]
+                                return
                                 #Venia algo mas que no era guion
                         else:
                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                            self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                            return
                             #Venia algo mas que no era entero
                     else:
                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                        self.lts_datos = ["Error", "MENORQUE", token.tipo, token.linea, token.columna]
+                        return
                         #Venia algo mas que no era menorque
                 else:
                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                    self.lts_datos = ["Error", "TEMPORADA", token.tipo, token.linea, token.columna]
+                    return
                     #Venia algo mas que no era temporada
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
-                #Venia algo mas que no era cadenas
+                self.lts_datos = ["Error", "CADENA", token.tipo, token.linea, token.columna]
+                return
+                #Venia algo mas que no era cadena
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
             #Venia algo mas que no era partidos
@@ -840,24 +929,42 @@ class AnalizadorSintactico():
                                             self.lts_datos = ["top-i",condicion, anio_inicial, anio_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                        #*El token MAYORQUE es casi innecesario, nos recuperamos del erro sintactico
+                                        num_equipos = self.BANDERATOP()
+                                        if num_equipos != None:
+                                            self.lts_datos = ["top-c",condicion, anio_inicial, anio_final, num_equipos]
+                                        else:
+                                            self.lts_datos = ["top-i",condicion, anio_inicial, anio_final]
                                         #Venia algo mas que no era mayorque
                                 else:
                                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                    self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                    return
                                     #Venia algo mas que no era entero
                             else:
                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                self.lts_datos = ["Error", "GUION", token.tipo, token.linea, token.columna]
+                                return
                                 #Venia algo mas que no era guion
                         else:
                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                            self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                            return
                             #Venia algo mas que no era entero
                     else:
                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                        self.lts_datos = ["Error", "MENORQUE", token.tipo, token.linea, token.columna]
+                        return
                         #Venia algo mas que no era menorque
                 else:
                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                    self.lts_datos = ["Error", "TEMPORADA", token.tipo, token.linea, token.columna]
+                    return
                     #Venia algo mas que no era temporada
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "CONDICION", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era (superior|inferior)
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
@@ -877,10 +984,12 @@ class AnalizadorSintactico():
                 return
             elif token.tipo == "<<EOF>>":
                 #*Se hace la funcionalidad
-                print("Hasta luego...")
+                #print("Hasta luego...")
                 self.lts_datos = ["adios"]
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "<<EOF>>", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era <<EOF>>
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)

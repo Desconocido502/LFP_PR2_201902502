@@ -21,7 +21,8 @@ class Controlador():
     #*Funcion para crear el html de los errores
     def show_bug_in_html(self):
         self.modelo.reporteErroresHTML()
-        self.vista.show_msg_open_manual_succesfully("Creando el archivo \nHTML de Errores Léxicos")
+        self.modelo.reporteErroresSHTML()
+        self.vista.show_msg_open_manual_succesfully("Creando reporte de\nErrores Léxicos y Sintacticos")
     
     #*Funcion para limpiar el log de los errores
     def clean_log_bugs(self):

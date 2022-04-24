@@ -24,7 +24,7 @@ class Vista(ttk.Frame):
         
         #* Consola donde interactua el usuario y el bot
         self.text_widget = tk.Text(self.parent,bg="#001d36", fg="white", font=FONT_BOLD2)
-        self.text_widget.place(x=20, y= 20, width=850, height=500)
+        self.text_widget.place(x=20, y= 20, width=950, height=500)
         self.text_widget.insert('1.0', "BOT: Bienvenido a La Liga Bot, Ingresa un comando\n\n")
         self.text_widget.configure(cursor="arrow", state=DISABLED)
         
@@ -35,40 +35,40 @@ class Vista(ttk.Frame):
         
         #* Bottom bug report
         self.bug_report = tk.Button(self.parent, text="Reporte de errores", bg=BG_BOTTOM, fg=FG_BOTTOM, font=FONT_BOLD, borderwidth=5, command=self.clicked_on_bug_report)
-        self.bug_report.place(x=885, y=20, width=200, height=30)
+        self.bug_report.place(x=985, y=20, width=200, height=30)
         
         #* Bottom clean log bug
         self.clean_log_bug = tk.Button(self.parent, text="Limpiar log de errores", bg=BG_BOTTOM, fg=FG_BOTTOM, font=FONT_BOLD, borderwidth=5, command=self.clicked_on_clean_log_bug)
-        self.clean_log_bug.place(x=885, y= 60, width=200, height=30)
+        self.clean_log_bug.place(x=985, y= 60, width=200, height=30)
 
         #* Bottom token report
         self.token_report = tk.Button(self.parent,text="Reporte de tokens", bg=BG_BOTTOM, fg=FG_BOTTOM, font=FONT_BOLD, borderwidth=5, command=self.clicked_on_token_report)
-        self.token_report.place(x=885, y= 100, width=200, height=30)
+        self.token_report.place(x=985, y= 100, width=200, height=30)
         
         #* Bottom clean log token 
         self.clean_log_token = tk.Button(self.parent, text="Limpiar log de tokens", bg=BG_BOTTOM, fg=FG_BOTTOM, font=FONT_BOLD, borderwidth=5, command=self.clicked_on_clean_log_token)
-        self.clean_log_token.place(x=885, y= 140, width=200, height=30)
+        self.clean_log_token.place(x=985, y= 140, width=200, height=30)
         
         #* Bottom user manual
         self.user_manual = tk.Button(self.parent, text="Manual de usuario", bg=BG_BOTTOM, fg=FG_BOTTOM, font=FONT_BOLD, borderwidth=5, command=self.clicked_on_user_manual)
-        self.user_manual.place(x=885, y= 180, width=200, height=30)
+        self.user_manual.place(x=985, y= 180, width=200, height=30)
         
         #* Bottom technical manual
         self.technical_manual = tk.Button(self.parent, text="Manual técnico", bg=BG_BOTTOM, fg=FG_BOTTOM, font=FONT_BOLD, borderwidth=5, command=self.clicked_on_technical_manual)
-        self.technical_manual.place(x=885, y= 220, width=200, height=30)
+        self.technical_manual.place(x=985, y= 220, width=200, height=30)
         
         #* Bottom send text
         self.send_text = tk.Button(self.parent, text="ENVIAR",bg="#5d2147", fg="#FBFCFC", font=("Helvetica", 15), borderwidth=5, command=self.send_data) #, command=self.moveTextToTextArea
-        self.send_text.place(x=885, y=530, width=200, height=45)
+        self.send_text.place(x=985, y=530, width=200, height=45)
         
         #* message entry box
         self.msg_var = tk.StringVar()
         self.msg_entry = tk.Entry(self.parent, textvariable=self.msg_var, bg="#121128", fg="#FBFCFC", font=("Helvetica", 12))
-        self.msg_entry.place(x=20, y = 530, width=850, height=45)
+        self.msg_entry.place(x=20, y = 530, width=950, height=45)
         
         #*Message
         self.message_label = tk.Label(self.parent, text="", foreground="white", bg="#5e64ad", font=("Helvetica", 12))
-        self.message_label.place(x=885, y= 260, width=200, height=40)
+        self.message_label.place(x=975, y= 260, width=200, height=40)
         
         #*Establecemos el controlador
         self.controlador = None

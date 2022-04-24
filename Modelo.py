@@ -11,6 +11,7 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
         self.name = name
         #*Se inicializan algunos metodos como la carga de los partidos
         self.partidos : list = self.leerArchivo() #*Retorna la lista de los partidos
+        self.lts_erroresSG = []#*Listado de Errores sintacticos
         self.lts_tokensG = []
         self.lts_erroresG = []
         self.lts_tokens_tmp = None #*Contendra la lista de tokens por cada vuelta(es una lista de tokens temporal)
@@ -64,7 +65,8 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
         
         #*Nos faltan las demas gramaticas, hay unas por corregir, pero os vamos a hacer mejor los html de tokens y errores lexicos
         self.lts_datos = analisis_sintactico_comando.getLtsDatos()#*Se retorna la lista de datos
-        #!Nos quedamos aqui
+        self.lts_erroresSG += analisis_sintactico_comando.getLtsErrores()#*Se retorna la lista de errores sintacticos
+        
     def returnResponse(self):
         if self.lts_datos == None:
             print("Venia cadena vacia y por tanto <<EOF>>")
@@ -298,8 +300,8 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
                 return txt_response #*Se retorna la respuesta del 'bot'
             
             self.a_teams_season(name_equipo, anio_inicial, anio_final, identificador, None, None)
-            #txt_response = f"BOT: Generando archivo de resultados de temporada {anio_inicial}-{anio_final} del {name_equipo}\n\n"
-            #return txt_response
+            txt_response = f"BOT: Generando archivo de resultados de temporada {anio_inicial}-{anio_final} del {name_equipo}\n\n"
+            return txt_response
             #print(name_equipo, anio_inicial, anio_final, identificador)
         elif self.lts_datos[0] == "partidos-i": #*Para el caso donde el archivo html tendra un nombre por default
             name_equipo = self.lts_datos[1].replace('"', '')
@@ -340,6 +342,8 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
                 return txt_response #*Se retorna la respuesta del 'bot'
             
             self.a_teams_season(name_equipo, anio_inicial, anio_final, None, jornada_i, jornada_f)
+            txt_response = f"BOT: Generando archivo de resultados de temporada {anio_inicial}-{anio_final} del {name_equipo}\n\n"
+            return txt_response
             #print(name_equipo, anio_inicial, anio_final, jornada_i, jornada_f)
         elif self.lts_datos[0] == "top-c": #*Para el caso donde se da un numero de equipos en especifico a mostrar
             condicion = self.lts_datos[1]
@@ -416,7 +420,10 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
             venia_txt = self.lts_datos[2]
             linea = self.lts_datos[3]
             columna = self.lts_datos[4]
-            txt_response = f"BOT: Error, se esperaba un token '{esperaba_txt}', pero vino token '{venia_txt}', en la linea: {linea}, columna:{columna}"
+            txt_response = f"BOT: Error, se esperaba un token '{esperaba_txt}', pero vino token '{venia_txt}', en la linea: {linea}, columna:{columna}\n\n"
+            return txt_response
+        elif self.lts_datos[0] == "Error-r":
+            txt_response = "BOT: Error, comando no reconocido!!!, ingrese correctamente el comando!\n\n"
             return txt_response
         else: #*Si no es ninguno de los tokens inciales, viene un token que no es parte del inicio de una gramatica
             print("Error, se detecto un problema en los resultados")
@@ -548,6 +555,70 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
                 file.close()
                 webbrowser.open_new_tab(nombreHTML)
                 print("Reporte de errores finalizado con Exito")
+        else:
+            print("No hay informacion con que crear el HTML")
+    
+    def reporteErroresSHTML(self):
+        if self.lts_erroresSG != None:
+            doc_str = """
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="./css/style.css">
+                    <title>Lista de errores Sintacticos</title>
+                </head>
+                <body>
+                    <h1>Reporte de Errores Sintacticos</h1>
+                <div class="container">
+                <table>
+                    <thead class="container_encabezado">
+                        <tr>
+                            <td>TIPO</td>
+                            <td>LEXEMA</td>
+                            <td>FILA</td>
+                            <td>COLUMNA</td>
+                        </tr>
+                    </thead>
+                <tbody class="container_cuerpo">
+            """
+            cuerpo = ""  # *Tocamos el codigo en la parte del tipo ya que se ha de confundir con <<EOF>>
+            for error in self.lts_erroresSG:
+                tipoToken = error.getTipo()
+                if error.getTipo() == "<<EOF>>":
+                    tipoToken = f"&lt;&lt;EOF&gt;&gt;"
+                cuerpo += f""" 
+                    <tr>
+                        <td>  {tipoToken} </td>
+                        <td> {error.getLexema()} </td>
+                        <td> {error.getLinea()} </td>
+                        <td> {error.getColumna()} </td>
+                    </tr>\n    
+                """
+            cuerpo += """ 
+                    </tbody>
+                </table>
+                </div>
+                <footer class="datos">
+                <p>Carlos E. Soto M. - 201902502 - Proyecto 2</p>
+                </footer>
+            </body>
+            </html>
+            """
+            doc_str += cuerpo
+            # Fin del reporte de lista de tokens
+            nombreHTML = "lista_errores_sintacticos.html"
+            try:
+                file = open(nombreHTML, "w")
+                file.write(doc_str)
+            except:
+                print("Error al crear el HTML")
+            finally:
+                file.close()
+                webbrowser.open_new_tab(nombreHTML)
+                #print("Reporte de errores finalizado con Exito")
         else:
             print("No hay informacion con que crear el HTML")
     

@@ -23,7 +23,7 @@ class App(tk.Tk):
 
 if __name__ == "__main__":
     app = App()
-    app.geometry("1100x600")
+    app.geometry("1200x600")
     app.config(bg="#5e64ad")
     app.resizable(width=False, height=False)
     app.mainloop()
