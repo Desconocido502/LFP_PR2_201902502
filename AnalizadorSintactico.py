@@ -139,30 +139,46 @@ class AnalizadorSintactico():
                                                 self.lts_datos = ["resultado",equipo_local, equipo_visitante, anio_inicial, anio_final]
                                             else:
                                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
-                                                #Venia algo mas que no era entero
+                                                #Venia algo mas que no era mayorque
                                         else:
                                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                            self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                            return
                                             #Venia algo mas que no era entero
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                        self.lts_datos = ["Error", "GUION", token.tipo, token.linea, token.columna]
+                                        return
                                         #Venia algo mas que no era guion
                                 else:
                                     self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                    self.lts_datos = ["Error", "ENTERO", token.tipo, token.linea, token.columna]
+                                    return
                                     #Venia algo mas que no era entero
                             else:
                                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                                self.lts_datos = ["Error", "MENORQUE", token.tipo, token.linea, token.columna]
+                                return
                                 #Venia algo mas que no era menorque
                         else:
                             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                            self.lts_datos = ["Error", "TEMPORADA", token.tipo, token.linea, token.columna]
+                            return
                             #Venia algo mas que no era temporada
                     else:
                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                        self.lts_datos = ["Error", "CADENA", token.tipo, token.linea, token.columna]
+                        return
                         #Venia algo mas que no era cadena
                 else:
-                    self.agregarError(token.tipo, token.lexema, token.linea, token.columna) 
+                    self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                    self.lts_datos = ["Error", "VS", token.tipo, token.linea, token.columna]
+                    return
                     #Venia algo mas que no era vs
             else:
                 self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                self.lts_datos = ["Error", "CADENA", token.tipo, token.linea, token.columna]
+                return
                 #Venia algo mas que no era cadena
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
@@ -259,6 +275,47 @@ class AnalizadorSintactico():
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
             #Venia algo mas que no era jornada
+
+    # def BANDERAEXPORTAR(self):
+    #     '''Produccion
+    #         BANDERAEXPORTAR ::= banderaexportar identificador
+    #                         | BANDERA_I
+    #                         | BANDERA_J
+    #                         | Epsilon (<<EOF>>)
+    #     '''
+    #     identificador = ""
+    #     #* Sacar token --- Se espera la palabra reservada banderaexportar
+    #     token = self.verToken()
+    #     if token is None:
+    #         #* Como en esta produccion es posible esperar Epsilon
+    #         #* Se retorna una cadena vacia en caso de que token.tipo
+    #         #* no sea una banderaexportar, esto para simular el Epsilon.
+    #         return identificador
+    #     elif token.tipo == "banderaexportar":
+    #         #* Ya se que es una banderaexportar, entonces si lo saco
+    #         token = self.sacarToken()
+            
+    #         #* Sacar otro token --- se espera identificador
+    #         token = self.sacarToken()
+    #         if token is None:
+    #             self.agregarError("error sintactico", "<<EOF>>", "", "")
+    #             return 
+    #         elif token.tipo == "IDENTIFICADOR":
+    #             identificador = token.lexema
+    #             return identificador
+    #         else:
+    #             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+    #             #Venia algo mas que no era identificador
+    #     elif token.tipo == "banderainicial":
+    #         return "bi"
+    #     elif token.tipo == "banderafinal":
+    #         return "bf"
+    #     elif token.tipo == "<<EOF>>":
+    #         pass
+    #     else:
+    #         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+    #         #Venia algo mas que no era banderaexportar
+    
     
     def BANDERAEXPORTAR(self):
         '''Produccion
@@ -294,6 +351,77 @@ class AnalizadorSintactico():
         else:
             self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
             #Venia algo mas que no era banderaexportar
+    
+    def BANDERA_I(self):
+        ''' Produccion
+        BANDERA_I ::= banderainicial entero
+                    | BANDERA_J
+                    | Epsilon (<<EOF>>)
+        '''
+        numero_inicial = ""
+        #* Sacar token --- Se espera la palabra reservada banderainicial
+        token = self.verToken()
+        if token is None:
+            #* Como en esta produccion es posible esperar Epsilon
+            #* Se retorna una cadena vacia en caso de que token.tipo
+            #* no sea una banderaexportar, esto para simular el Epsilon.
+            return ""
+        elif token.tipo == "banderainicial":
+            #* Ya se que es una banderainicial, entonces si lo saco
+            token = self.sacarToken()
+            
+            #* Sacar otro token --- se espera entero
+            token = self.sacarToken()
+            if token is None:
+                self.agregarError("error sintactico", "<<EOF>>", "", "")
+                return 
+            elif token.tipo == "ENTERO":
+                numero_inicial = token.lexema
+                return numero_inicial
+            else:
+                self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                #Venia algo mas que no era entero
+        elif token.tipo == "banderafinal":
+            return "bf"
+        elif token.tipo == "<<EOF>>":
+            pass
+        else:
+            self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+            #Venia algo mas que no era banderainicial
+    
+    def BANDERA_J(self):
+        '''Produccion 
+        BANDERA_J ::= banderafinal entero
+                    | Epsilon (<<EOF>>)
+        '''
+        numero_final = ""
+        #* Sacar token --- Se espera la palabra reservada banderafinal
+        token = self.verToken()
+        if token is None:
+            #* Como en esta produccion es posible esperar Epsilon
+            #* Se retorna una cadena vacia en caso de que token.tipo
+            #* no sea una banderaexportar, esto para simular el Epsilon.
+            return ""
+        elif token.tipo == "banderafinal":
+            #* Ya se que es una banderafinal, entonces si lo saco
+            token = self.sacarToken()
+            
+            #* Sacar otro token --- se espera entero
+            token = self.sacarToken()
+            if token is None:
+                self.agregarError("error sintactico", "<<EOF>>", "", "")
+                return 
+            elif token.tipo == "ENTERO":
+                numero_final = token.lexema
+                return numero_final
+            else:
+                self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+                #Venia algo mas que no era entero
+        elif token.tipo == "<<EOF>>":
+            pass
+        else:
+            self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
+            #Venia algo mas que no era banderafinal
     
     def BANDERAIJ(self):
         '''Produccion
@@ -520,7 +648,7 @@ class AnalizadorSintactico():
                                     identificador = self.BANDERAEXPORTAR()
                                     #* Se llama a la funcionalidad
                                     print("Analis sintactico de la cuarta gramatica completada con exito!!")
-                                    print(anio_inicial, anio_final, identificador)
+                                    #print(anio_inicial, anio_final, identificador)
                                     if identificador != None:
                                         self.lts_datos = ["tabla-c", anio_inicial, anio_final, identificador]
                                     else:
@@ -607,11 +735,13 @@ class AnalizadorSintactico():
                                         self.agregarError("error sintactico", "<<EOF>>", "", "")
                                         return
                                     elif token.tipo == "MAYORQUE":
+                                        #*sE QUEDARA ASI POR MOTIVOS DE TIEMPO
                                         #* Despues de mayor que se espera BANDERAEXPORTAR o Epsilon, las validaciones
                                         #*respectivas se haran en la funcion de BANDERAEXPORTAR
                                         identificador = self.BANDERAEXPORTAR()
                                         #*Nos falta hacer las validaciones de si vienen vacios o no en las banderas
                                         lts_indices = self.BANDERAIJ() #* Nos devuelve los indices en caso de que existan.
+                                            
                                         #print(name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final)
                                         if identificador != None and identificador != "":
                                             #print(name_equipo, anio_inicial, anio_final, identificador)
@@ -619,7 +749,7 @@ class AnalizadorSintactico():
                                         else:
                                             jornada_inicial = lts_indices[0]
                                             jornada_final = lts_indices[1]
-                                            self.lts_datos = ["partidos-i",name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final]
+                                            self.lts_datos = ["partidos-i", name_equipo, anio_inicial, anio_final, jornada_inicial, jornada_final]
                                     else:
                                         self.agregarError(token.tipo, token.lexema, token.linea, token.columna)
                                         #Venia algo mas que no era mayorque
@@ -703,7 +833,7 @@ class AnalizadorSintactico():
                                         return
                                     elif token.tipo == "MAYORQUE":
                                         num_equipos = self.BANDERATOP()
-                                        print(condicion, anio_inicial, anio_final, num_equipos)
+                                        #print(condicion, anio_inicial, anio_final, num_equipos)
                                         if num_equipos != None:
                                             self.lts_datos = ["top-c",condicion, anio_inicial, anio_final, num_equipos]
                                         else:

@@ -327,7 +327,7 @@ def is_identifier(caracter):
         JORNADA 1 TEMPORADA <1996-1997> -f jornada1Reporte | JORNADA 12 TEMPORADA <1996-1997>
         GOLES TOTAL "Valencia" TEMPORADA <1998-1999> | GOLES LOCAL "Zaragoza" TEMPORADA <1998-1999>
         TABLA TEMPORADA <2018-2019> | TABLA TEMPORADA <1996-1997> -f reporteGlobal1
-         | PARTIDOS "Español" TEMPORADA <1999-2000> -f reporteEspanol
+        PARTIDOS "Real Madrid" TEMPORADA <1999-2000> -ji 1 -jf 18 | PARTIDOS "Español" TEMPORADA <1999-2000> -f reporteEspanol
         TOP SUPERIOR TEMPORADA <2000-2001> | TOP INFERIOR TEMPORADA <1999-2000> -n 3
         ADIOS
         

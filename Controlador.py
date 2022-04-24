@@ -14,8 +14,8 @@ class Controlador():
         #*Asi por ultimo se pasa a la vista los datos obtenidos del analizador sintactico
         self.modelo.analisisSintactico()
         data = self.modelo.returnResponse() #*Devuelve la respuesta segun el comando en una cadena de texto
-        #self.vista.printResponse(data)
-        #self.vista.show_msg_open_manual_succesfully("Comando leído sin \nningún problema...")
+        self.vista.printResponse(data)
+        self.vista.show_msg_open_manual_succesfully("Comando leído sin \nningún problema...")
     
     
     #*Funcion para crear el html de los errores

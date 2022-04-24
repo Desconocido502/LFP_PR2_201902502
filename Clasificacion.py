@@ -37,6 +37,25 @@ class Clasificacion():
         self.setListaEquipos(lista)
         #print("Equipos ordenados por el total de pts (Global)")
 
+    #*Ordena de menor a mayor
+    def bubble_sort_equipos2(self):
+        lista = self.getListaEquipos()
+        
+        for lts in lista:
+            lts.calcular_pts_local()
+            lts.calcular_pts_visitante()
+        
+        count = len(lista)
+        #print(lista[0].datos_local.getPJ())
+        for i in range(0, count):
+            for j in range(i+1, count):
+                if (lista[i].pts_total() > lista[j].pts_total()):
+                    #print(lista[i].getTotalPts())
+                    aux = lista[j]
+                    lista[j] = lista[i]
+                    lista[i] = aux
+        self.setListaEquipos(lista)
+
 # realMadrid = Equipo("Real Madrid")
 # realMadrid.datos_local.setPJ(16)
 # realMadrid.datos_local.setPG(11)

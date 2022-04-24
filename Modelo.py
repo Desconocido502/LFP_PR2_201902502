@@ -114,6 +114,7 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
             bandera_inicial = self.validate_year_initial(anio_inicial)
             bandera_final = self.validate_year_final(anio_final)
             bandera_numero = self.validate_number_day(num_jornada)
+            
             if (bandera_inicial == "a"): #*No se hace nada
                 pass
             elif (bandera_inicial == "nfr"):
@@ -139,7 +140,7 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
             self.result_of_a_day(num_jornada, anio_inicial, anio_final, identificador)
             txt_response = f"BOT: Generando archivo de resultados jornada {num_jornada} temporada {anio_inicial}-{anio_final}\n\n"
             return txt_response
-            print(num_jornada, anio_inicial, anio_final, identificador)
+            #print(num_jornada, anio_inicial, anio_final)
         elif self.lts_datos[0] == "jornada-i": #*Para el caso donde el archivo html tendra un nombre por default
             num_jornada = self.lts_datos[1]
             anio_inicial = self.lts_datos[2]
@@ -203,7 +204,7 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
             
             
             resultado = self.team_goals_in_a_season(condiciong, name_equipo, anio_inicial, anio_final) #*Retorna una cantidad en str o ERROR
-            print(condiciong, name_equipo, anio_inicial, anio_final)
+            #print(condiciong, name_equipo, anio_inicial, anio_final)
             if resultado != "Error":
                 txt_response = f"BOT: Los goles anotados por el {name_equipo} en {condiciong} en la temporada {anio_inicial}-{anio_final} fueron {resultado}\n\n"
                 return txt_response
@@ -275,19 +276,150 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
             anio_final = self.lts_datos[3]
             identificador = self.lts_datos[4]
             
-            self.a_teams_season(name_equipo, anio_inicial, anio_final, identificador, None, None)
+            bandera_inicial = self.validate_year_initial(anio_inicial)
+            bandera_final = self.validate_year_final(anio_final)
             
-            print(name_equipo, anio_inicial, anio_final, identificador)
+            if (bandera_inicial == "a"): #*No se hace nada
+                pass
+            elif (bandera_inicial == "nfr"):
+                txt_response = "BOT: El número inicial se encuentra fuera del rango aceptable (1979-2019)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_inicial == "nm"):
+                txt_response = "BOT: El número inicial contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            if (bandera_final == "a"): #*No se hace nada
+                pass
+            elif (bandera_final == "nfr"):
+                txt_response = "BOT: El número final se encuentra fuera del rango aceptable (1980-2020)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_final == "nm"):
+                txt_response = "BOT: El número final contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            self.a_teams_season(name_equipo, anio_inicial, anio_final, identificador, None, None)
+            #txt_response = f"BOT: Generando archivo de resultados de temporada {anio_inicial}-{anio_final} del {name_equipo}\n\n"
+            #return txt_response
+            #print(name_equipo, anio_inicial, anio_final, identificador)
         elif self.lts_datos[0] == "partidos-i": #*Para el caso donde el archivo html tendra un nombre por default
-            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3], self.lts_datos[4], self.lts_datos[5])
+            name_equipo = self.lts_datos[1].replace('"', '')
+            anio_inicial = self.lts_datos[2]
+            anio_final = self.lts_datos[3]
+            jornada_i = self.lts_datos[4]
+            jornada_f = self.lts_datos[5]
+            
+            bandera_inicial = self.validate_year_initial(anio_inicial)
+            bandera_final = self.validate_year_final(anio_final)
+            bandera_jornada_i = self.validate_number_day(jornada_i)  
+            bandera_jornada_f = self.validate_number_day(jornada_f)  
+            
+            if (bandera_inicial == "a"): #*No se hace nada
+                pass
+            elif (bandera_inicial == "nfr"):
+                txt_response = "BOT: El número inicial se encuentra fuera del rango aceptable (1979-2019)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_inicial == "nm"):
+                txt_response = "BOT: El número inicial contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            if (bandera_final == "a"): #*No se hace nada
+                pass
+            elif (bandera_final == "nfr"):
+                txt_response = "BOT: El número final se encuentra fuera del rango aceptable (1980-2020)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_final == "nm"):
+                txt_response = "BOT: El número final contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            if(bandera_jornada_i == "nm"):
+                txt_response = "BOT: El indice de jornada inicial contiene más de 2 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            if(bandera_jornada_f == "nm"):
+                txt_response = "BOT: El indice de jornada final contiene más de 2 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            self.a_teams_season(name_equipo, anio_inicial, anio_final, None, jornada_i, jornada_f)
+            #print(name_equipo, anio_inicial, anio_final, jornada_i, jornada_f)
         elif self.lts_datos[0] == "top-c": #*Para el caso donde se da un numero de equipos en especifico a mostrar
-            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3], self.lts_datos[4])
+            condicion = self.lts_datos[1]
+            anio_inicial = self.lts_datos[2]
+            anio_final = self.lts_datos[3]
+            cantidad_equipos = self.lts_datos[4]
+            
+            bandera_inicial = self.validate_year_initial(anio_inicial)
+            bandera_final = self.validate_year_final(anio_final)
+            bandera_ctd_team = self.validate_number_day(cantidad_equipos)  
+            
+            if (bandera_inicial == "a"): #*No se hace nada
+                pass
+            elif (bandera_inicial == "nfr"):
+                txt_response = "BOT: El número inicial se encuentra fuera del rango aceptable (1979-2019)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_inicial == "nm"):
+                txt_response = "BOT: El número inicial contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            if (bandera_final == "a"): #*No se hace nada
+                pass
+            elif (bandera_final == "nfr"):
+                txt_response = "BOT: El número final se encuentra fuera del rango aceptable (1980-2020)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_final == "nm"):
+                txt_response = "BOT: El número final contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+
+            if(bandera_ctd_team == "nm"):
+                txt_response = "BOT: El numero de equipos contiene más de 2 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+
+            lts_top = self.top_of_teams(condicion, anio_inicial, anio_final, cantidad_equipos)
+            txt_response = f"BOT: El top {condicion.lower()} de la temporada {anio_inicial}-{anio_final} fue:\n{lts_top}"
+            return txt_response
+            #print(condicion, anio_inicial, anio_final, cantidad_equipos)
         elif self.lts_datos[0] == "top-i": #*Para el caso donde no se da un numero de equipos en especifico a mostrar
-            print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3])
-        elif self.lts_datos[0] == "adios": 
-            print("adios")
+            #print(self.lts_datos[1], self.lts_datos[2], self.lts_datos[3])
+            condicion = self.lts_datos[1]
+            anio_inicial = self.lts_datos[2]
+            anio_final = self.lts_datos[3]
+            
+            bandera_inicial = self.validate_year_initial(anio_inicial)
+            bandera_final = self.validate_year_final(anio_final)
+            
+            if (bandera_inicial == "a"): #*No se hace nada
+                pass
+            elif (bandera_inicial == "nfr"):
+                txt_response = "BOT: El número inicial se encuentra fuera del rango aceptable (1979-2019)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_inicial == "nm"):
+                txt_response = "BOT: El número inicial contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            if (bandera_final == "a"): #*No se hace nada
+                pass
+            elif (bandera_final == "nfr"):
+                txt_response = "BOT: El número final se encuentra fuera del rango aceptable (1980-2020)\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            elif (bandera_final == "nm"):
+                txt_response = "BOT: El número final contiene más de 4 digitos\n\n"
+                return txt_response #*Se retorna la respuesta del 'bot'
+            
+            lts_top = self.top_of_teams(condicion, anio_inicial, anio_final, None)
+            txt_response = f"BOT: El top {condicion.lower()} de la temporada {anio_inicial}-{anio_final} fue:\n{lts_top}"
+            return txt_response
+            #print(condicion, anio_inicial, anio_final)
+        elif self.lts_datos[0] == "adios":
+            txt_response = "BOT: \t\tADIOS"
+            return txt_response
+        elif self.lts_datos[0] == "Error":
+            esperaba_txt = self.lts_datos[1]
+            venia_txt = self.lts_datos[2]
+            linea = self.lts_datos[3]
+            columna = self.lts_datos[4]
+            txt_response = f"BOT: Error, se esperaba un token '{esperaba_txt}', pero vino token '{venia_txt}', en la linea: {linea}, columna:{columna}"
+            return txt_response
         else: #*Si no es ninguno de los tokens inciales, viene un token que no es parte del inicio de una gramatica
-            pass
+            print("Error, se detecto un problema en los resultados")
     
     #*Se crea el reporte de Tokens
     def reporteTokensHTML(self):
@@ -438,10 +570,10 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
         temporada = anio_inicial+"-"+anio_final
         lts_season = self.search_for_season(temporada) #*Busca por temporada y devulve una lista de los partidos de esa temporada
         lts_days = self.search_for_day(lts_season, num_jornada) #*Busca el numero de jornada en la lista de temporada especificada
-        print("Identificador:", identificador)
+        #print("Identificador:", identificador)
         if (identificador == None):
             identificador = "jornada"
-            print("Identificador renombrado:", identificador)
+            #print("Identificador renombrado:", identificador)
         #* Aqui ya se manda la lista de los partidos en cierta jornada para crear el html
         self.create_html_for_day(num_jornada, anio_inicial, anio_final, identificador, lts_days)
     
@@ -793,7 +925,178 @@ class Modelo(): #*Tiene toda la logica del negocio osea el backend
             #print("Reporte de tabla general de temporada finalizado con exito")
     
     def a_teams_season(self, name_equipo, anio_inicial, anio_final, identificador, j_inicial, j_final):
+        #*Lo primero es buscar por la temporada que se nos esta dando, luego de esto en la lista de temporadas
+        #*Se busca el nombre del equipo, y por partido que encuentre donde el equipo participo se agregue a una nueva
+        #*lista, en esta lista apareceran 'todos' los partidos que tuvo en la temporada, ahora se usara otra lista 
+        #*para volver a minimizar las jornadas, en caso de que las jornadas sean None, no se hace uso de la nueva lista
         
         temporada = anio_inicial+"-"+anio_final
         lts_season = self.search_for_season(temporada) #*Busca por temporada y devulve una lista de los partidos de esa temporada
         
+        if (j_inicial == None and j_final == None):
+            j_inicial = lts_season[0].jornada
+            j_final = lts_season[len(lts_season)-1].jornada
+            
+        
+        if (identificador == None):
+            identificador = "partidos"
+        
+        #print(identificador, j_inicial, j_final)
+        
+        resultados_equipo_temporada = []
+        for partido in lts_season:
+            if(partido.getEquipoLocal() == name_equipo):
+                if(int(partido.getJornada()) >= int(j_inicial) and int(partido.getJornada()) <= int(j_final)):
+                    resultados_equipo_temporada.append(partido)
+            elif(partido.getEquipoVisitante() == name_equipo):
+                if(int(partido.getJornada()) >= int(j_inicial) and int(partido.getJornada()) <= int(j_final)):
+                    resultados_equipo_temporada.append(partido)
+                    
+        # for r_team in resultados_equipo_temporada:
+        #     print(r_team)
+        #     print("---------------------------------------------------------------------")
+        self.create_html_a_teams_season(name_equipo, resultados_equipo_temporada, temporada, identificador) 
+    
+    
+    #*Metodo para construir el html de los resultados de un equipo en una temporada
+    def create_html_a_teams_season(self, name_equipo, resultados, temporada, identificador):
+        doc_str = f"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/estilos_tmp_e.css">
+    <title>Temporada de un equipo</title>
+</head>
+<body>
+    <h1>Resultados del Equipo: {name_equipo}, temporada: {temporada}</h1>
+    <table class="resultado">
+        <thead>
+            <th>Fecha</th>
+            <th>Jornada</th>
+            <th>Equipo Local</th>
+            <th>Goles Local</th>
+            <th>Goles Visitante</th>
+            <th>Equipo Visitante</th>
+        </thead>
+        <tbody>
+"""
+        cuerpo = ""
+        for team in resultados:
+            cuerpo += "\t<tr>\n"
+            cuerpo += f"\t\t<td>{team.getFecha()}\n</td>"
+            cuerpo += f"\t\t<td>{team.getJornada()}\n</td>"
+            cuerpo += f"\t\t<td>{team.getEquipoLocal()}\n</td>"
+            cuerpo += f"\t\t<td>{team.getGolesLocal()}\n</td>"
+            cuerpo += f"\t\t<td>{team.getGolesVisitante()}\n</td>"
+            cuerpo += f"\t\t<td>{team.getEquipoVisitante()}\n</td>"
+            cuerpo += "\t</tr>\n"
+        
+        cuerpo += """ 
+</tbody>
+    </table>
+    <div id="footer">Carlos E. Soto M. - 201902502 - Proyecto 2</div>
+</body>
+</html>
+"""     
+        doc_str += cuerpo #*Se concatena el resto de informacion
+        identificador = identificador+".html"
+        try:
+            file = open(identificador, "w", encoding="utf-8")
+            file.write(doc_str)
+        except:
+            print("Error al crear el archivo html")
+        finally:
+            file.close()
+            webbrowser.open_new_tab(identificador)
+            #print("Reporte de tabla general de temporada finalizado con exito")
+            
+    def top_of_teams(self, condicion, anio_inicial, anio_final, numero):
+        name_equipos = []
+        temporada = anio_inicial+"-"+anio_final
+        lts_season = self.search_for_season(temporada) #*Busca por temporada y devulve una lista de los partidos de esa temporada
+        for partido in lts_season:
+            if not str(partido.getEquipoLocal()) in name_equipos:
+                name_equipos.append(str(partido.getEquipoLocal()))#*Se listan todos los equipos de la temporada
+        
+        clasificacion = Clasificacion(temporada)
+        for equipo in name_equipos:
+            pg_local = 0
+            pp_local = 0
+            pe_local = 0
+            gf_local = 0
+            gc_local = 0
+            
+            pg_visitante = 0
+            pp_visitante = 0
+            pe_visitante = 0
+            gf_visitante = 0
+            gc_visitante = 0
+            team = Equipo(equipo)
+            for partido in lts_season:
+                if (equipo == partido.getEquipoLocal()): #*Como es local, solo cosas de local
+                    #*Se definen los partidos ganados-perdidos-empatados
+                    if (int(partido.getGolesLocal()) > int(partido.getGolesVisitante())):
+                        pg_local += 1
+                    elif (int(partido.getGolesLocal()) < int(partido.getGolesVisitante())):
+                        pp_local += 1
+                    else:#*Empate
+                        pe_local += 1
+                    gf_local += int(partido.getGolesLocal())
+                    gc_local += int(partido.getGolesVisitante())
+                elif (equipo == partido.getEquipoVisitante()): #*Como es visitante, solo cosas de visitante
+                    if (int(partido.getGolesVisitante()) > int(partido.getGolesLocal())):
+                        pg_visitante += 1
+                    elif (int(partido.getGolesVisitante()) < int(partido.getGolesLocal())):
+                        pp_visitante += 1
+                    else:#*Empate
+                        pe_visitante += 1
+                    gf_visitante += int(partido.getGolesVisitante())
+                    gc_visitante += int(partido.getGolesLocal())
+            
+            team.datos_local.setPG(pg_local)
+            team.datos_local.setPE(pe_local)
+            team.datos_local.setPP(pp_local)
+            team.datos_local.setGF(gf_local)
+            team.datos_local.setGC(gc_local)
+            team.datos_local.setPJ(pg_local + pe_local + pp_local)
+            
+            team.datos_visitante.setPG(pg_visitante)
+            team.datos_visitante.setPE(pe_visitante)
+            team.datos_visitante.setPP(pp_visitante)
+            team.datos_visitante.setGF(gf_visitante)
+            team.datos_visitante.setGC(gc_visitante)
+            team.datos_visitante.setPJ(pg_visitante + pe_visitante + pp_visitante)
+
+            clasificacion.lista_equipos.append(team) #*Se agrega el equipo a la lista de equipos en el objeto clasificacion
+            
+            #*En este punto ya se tiene la lista de los equipos en el objeto de clasificacion, ahora, dependiendo de la condicion
+            #*Es como se ordenaaran los equipos
+            
+        if(numero == None):
+            numero = 5
+
+        numero = int(numero) #*LO parseamos a int
+        
+        lts_teams = []
+        clasificacion.bubble_sort_equipos() #*Se ordena la lista de equipos
+        lts = clasificacion.getListaEquipos() #* Se obtiene la lista de equipos
+        if (condicion == "SUPERIOR"):
+            lts_teams = lts[0:numero]
+        else:#*INFERIOR
+            lts_teams = lts[-numero:]
+
+        #print(len(lts_teams))
+
+        count = 1
+        txt_equipos_top = ""
+        for equipo in lts_teams:
+            #print(equipo.nombre)
+            txt_equipos_top += "\t\t" + str(count) + ". " + str(equipo.nombre) + "\n"
+            count+=1
+
+        txt_equipos_top += "\n\n"
+        #print(txt_equipos_top)
+        return txt_equipos_top #*Se retorna el listado requerido

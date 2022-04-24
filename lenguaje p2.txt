@@ -68,15 +68,21 @@ EQUIPO ::= cadena
 ANIO ::= numero
         
 BANDERAEXPORTAR ::= banderaexportar identificador
-                  | BANDERAIJ
+                  | BANDERA_I
+                  | BANDERA_J
                   | Epsilon (<<EOF>>)
 
 CONDICIONG ::= local
              | visitante
              | total
 
-BANDERAIJ ::= banderainicial numero banderafinal numero
+BANDERA_I ::= banderainicial numero
+            | BANDERA_J
             | Epsilon (<<EOF>>)
+
+BANDERA_J ::= banderafinal numero
+            | Epsilon (<<EOF>>)
+
 
 CONDICIONT ::= superior
              | inferior

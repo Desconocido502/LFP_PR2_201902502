@@ -57,7 +57,7 @@ class Equipo():
     
     def __str__(self):
         return f"Nombre: {self.nombre}, \nLocal: {self.datos_local}\nVisitante:{self.datos_visitante}"
-    
+
 
 class DatosEstadisticos():
     def __init__(self):

@@ -30,12 +30,6 @@ class Partido():
         return self.golesVisitante
     
     def __str__(self):
-        return f""" 
-Fecha: {self.fecha}
-Temporada: {self.temporada}
-Jornada: {self.jornada}
-Equipo Local: {self.equipoLocal}
-Equipo Visitante: {self.equipoVisitante}
-Goles Local: {self.golesLocal}
-Goles Visitante : {self.golesVisitante}
-        """
+        return f"""Fecha: {self.fecha}, Temporada: {self.temporada}, Jornada: {self.jornada}, Equipo Local: {self.equipoLocal}, 
+Equipo Visitante: {self.equipoVisitante}, Goles Local: {self.golesLocal}, Goles Visitante : {self.golesVisitante}
+"""
