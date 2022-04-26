@@ -23,7 +23,7 @@ class AnalizadorLexico():
         buffer = ""
         centinela = "#"
         entrada += centinela
-        print(entrada)
+        #print(entrada)
         
         #*Columna
         columna = 1

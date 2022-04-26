@@ -1,29 +1,29 @@
 -----------------------------Palabras Reservadas-----------------------------
 |     TIPO        |             PATRON                |       LEXEMA        | 
 |-----------------|-----------------------------------|---------------------|
-|   RESULTADO     |     palabra reservada RESULTADO   |     RESULTADO       |1
-|   VS            |      palabra reservada VS         |      VS             |2
-|   TEMPORADA     |      palabra reservada TEMPORADA  |      TEMPORADA      |3
-|   JORNADA       |      palabra reservada JORNADA    |      JORNADA        |4
-|   GOLES         |      palabra reservada GOLES      |       GOLES         |5
-|   LOCAL         |      palabra reservada LOCAL      |       LOCAL         |6
-|   VISITANTE     |      palabra reservada VISITANTE  |       VISITANTE     |7
-|   TOTAL         |      palabra reservada TOTAL      |       TOTAL         |8
-|   TABLA         |      palabra reservada TABLA      |       TABLA         |9
-|   TOP           |      palabra reservada TOP        |       TOP           |10
-|   SUPERIOR      |      palabra reservada SUPERIOR   |       SUPERIOR      |11
-|   INFERIOR      |      palabra reservada INFERIOR   |       INFERIOR      |12
-|   ADIOS         |      palabra reservada ADIOS      |       ADIOS         |13
-|   PARTIDOS      |      palabra reservada PARTIDOS   |      PARTIDOS       |14
+|   RESULTADO     |     palabra reservada RESULTADO   |     RESULTADO       |
+|   VS            |      palabra reservada VS         |      VS             |
+|   TEMPORADA     |      palabra reservada TEMPORADA  |      TEMPORADA      |
+|   JORNADA       |      palabra reservada JORNADA    |      JORNADA        |
+|   GOLES         |      palabra reservada GOLES      |       GOLES         |
+|   LOCAL         |      palabra reservada LOCAL      |       LOCAL         |
+|   VISITANTE     |      palabra reservada VISITANTE  |       VISITANTE     |
+|   TOTAL         |      palabra reservada TOTAL      |       TOTAL         |
+|   TABLA         |      palabra reservada TABLA      |       TABLA         |
+|   TOP           |      palabra reservada TOP        |       TOP           |
+|   SUPERIOR      |      palabra reservada SUPERIOR   |       SUPERIOR      |
+|   INFERIOR      |      palabra reservada INFERIOR   |       INFERIOR      |
+|   ADIOS         |      palabra reservada ADIOS      |       ADIOS         |
+|   PARTIDOS      |      palabra reservada PARTIDOS   |      PARTIDOS       |
 -----------------------------------------------------------------------------
 
 -----------------------------------Banderas----------------------------------
 |     TIPO        |             PATRON                |       LEXEMA        |
 |-----------------|-----------------------------------|---------------------|
-|   -f            |      palabra reservada -f         |       -f            |1
-|   -ji           |      palabra reservada -ji        |       -ji           |2
-|   -jf           |      palabra reservada -jf        |       -jf           |3
-|   -n            |      palabra reservada -n         |       -n            |4
+|   -f            |      palabra reservada -f         |       -f            |
+|   -ji           |      palabra reservada -ji        |       -ji           |
+|   -jf           |      palabra reservada -jf        |       -jf           |
+|   -n            |      palabra reservada -n         |       -n            |
 -----------------------------------------------------------------------------
 
 ------------------------Signos---------------------
